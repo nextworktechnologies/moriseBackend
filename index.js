@@ -5,14 +5,15 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 import "./dbConnection.js";
 import userRoutes from "./Routes/UserRoute.js";
+import addressRoutes from "./Routes/AddressRoute.js";
 import cors from 'cors';
-
+import { connectToMongo } from "./dbConnection.js";
 const app = express();
 
 // Define a function to determine the allowed origin dynamically
 const AllowedOrigin = (origin, callback) => {
     // Check if the origin is one of the allowed origins
-    const allowedOrigins = ['https://admin.knoone.com', 'https://acc.knoone.com', 'https://knoone.com', "http://localhost:3000", "http://localhost:5500", "http://localhost:3001", "http://192.168.0.243:3000", "http://192.168.0.193:3000", "http://192.168.0.193:3001", "http://192.168.0.150:3000", "http://192.168.1.7:3000"];
+    const allowedOrigins = ['https://admin.knoone.com', 'https://acc.knoone.com', 'https://knoone.com', "http://localhost:3000", "http://localhost:5500", "http://localhost:3001", "http://192.168.0.243:3000", "http://192.168.0.193:3000", "http://192.168.0.193:3001", "http://192.168.0.150:3000", "http://192.168.1.7:3000","http://192.168.1.14:3000"];
     const isAllowed = allowedOrigins.includes(origin);
   
     // Call the callback with the result (error, isAllowed)
@@ -36,6 +37,7 @@ app.use(compression());
 
 
 app.use("/api/v1", userRoutes);
+app.use("/api/v1", addressRoutes);
 
 
 
