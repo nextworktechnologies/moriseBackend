@@ -9,7 +9,6 @@ routes.get("/get-occupation", async (req, res) => {
     const { page, limit = 10 } = req.query;
 
     const val = await occupation.getOccupation(page, limit);
-    console.log("val", val);
 
     res.status(val.status).send(val);
   } catch (error) {
@@ -17,8 +16,10 @@ routes.get("/get-occupation", async (req, res) => {
   }
 });
 routes.post("/create-occupation", async (req, res) => {
+  console.log("req.body", req.body);
+
   try {
-    const val = await occupation.createOccupatoin(req.body);
+    const val = await occupation.createOccupation(req.body);
 
     res.status(val.status).send(val);
   } catch (error) {

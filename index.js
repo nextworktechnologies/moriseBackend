@@ -7,6 +7,7 @@ import { connectToMongo } from "./dbConnection.js";
 // import userRoutes from "./Routes/UserRoute.js";
 import documentRoutes from "./Routes/DocumentRoute.js";
 import occupationRoutes from "./Routes/OccupationRoute.js";
+import queryRoutes from "./Routes/QueryRoute.js";
 import cors from "cors";
 
 const app = express();
@@ -53,6 +54,7 @@ app.use(compression());
 // app.use("/api/v1", userRoutes);
 app.use("/api/v1", documentRoutes);
 app.use("/api/v1", occupationRoutes);
+app.use("/api/v1", queryRoutes);
 const server = http.createServer(app);
 // Set a timeout of 10 minutes (600000 milliseconds)
 server.setTimeout(1000000);

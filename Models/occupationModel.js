@@ -19,6 +19,7 @@ class occupationModel {
   }
   toDatabaseJson() {
     return {
+      id: this.id,
       occupation: this.occupation,
       type: this.type,
       status: this.status,

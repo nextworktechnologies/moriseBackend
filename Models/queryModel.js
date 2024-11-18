@@ -1,5 +1,13 @@
 class queryModel {
-  constructor(id, userId, title, description, status, createdAt, updatedAt) {
+  constructor(
+    id,
+    userId,
+    title,
+    description,
+    status = "open",
+    createdAt,
+    updatedAt
+  ) {
     this.id = id;
     this.userId = userId;
     this.title = title;
@@ -14,7 +22,8 @@ class queryModel {
       jsonData.userId ?? null,
       jsonData.title ?? "",
       jsonData.description ?? "",
-      jsonData.status ?? "",
+      jsonData.status ?? "open",
+      "",
       jsonData.createdAt ?? new Date(),
       jsonData.updatedAt ?? new Date()
     );
@@ -49,3 +58,5 @@ class queryModel {
     };
   }
 }
+
+export default queryModel;

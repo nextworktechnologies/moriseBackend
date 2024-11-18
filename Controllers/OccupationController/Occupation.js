@@ -42,17 +42,31 @@ class OccupationController {
       };
     }
   }
-  async createOccupatoin(body) {
+  async createOccupation(body) {
     const add = occupation.fromJson(body);
     try {
+      // Check if occupation with the same ID already exists
+      const existingOccupation = await collection
+        .occupationCollection()
+        .findOne({ id: add.id });
+
+      if (existingOccupation) {
+        return {
+          status: "error",
+          message: "Occupation with this ID already exists.",
+        };
+      }
+
       const result = await collection
         .occupationCollection()
         .insertOne(add.toDatabaseJson(body));
+      console.log("result", result);
+
       if (result && result.insertedId) {
         return {
           ...columnUpdated("Occupation"),
           data: {
-            id: result.insertedId,
+            id: add.id,
             occupation: add.occupation,
             type: add.type,
             status: add.status,
@@ -64,6 +78,7 @@ class OccupationController {
         return tryAgain;
       }
     } catch (error) {
+      console.error("Error:", error);
       return serverError;
     }
   }
