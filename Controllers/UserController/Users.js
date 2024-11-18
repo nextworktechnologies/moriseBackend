@@ -170,30 +170,7 @@ async getUserById(id) {
 
 //get all user data
 
-async getAllUser(page, limit) {
-  console.log(page, limit)
-  const skip = parseInt(page-1) * limit;
-  try {
-    const result = await collection.userCollection().find({}).skip(skip).limit(parseInt(limit)).toArray();
-
-    if (result.length > 0) {
- 
-      console.log("dd",result)
-      return {
-        ...fetched("User"),
-        data: result
-      };
-    } else {
-      return tryAgain;
-    }
-  } catch (err) {
-    console.log("err",err)
-    return {
-      ...serverError,
-      err
-    };
-  }
-}
+c
 
 // login api 
   async login(req,res) {

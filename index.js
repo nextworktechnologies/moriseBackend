@@ -6,6 +6,8 @@ import "dotenv/config";
 import "./dbConnection.js";
 import userRoutes from "./Routes/UserRoute.js";
 import addressRoutes from "./Routes/AddressRoute.js";
+import categoryRoutes from "./Routes/CategoryRoute.js"
+import QualificationRoute from "./Routes/QualificationRoute.js"
 import cors from 'cors';
 import { connectToMongo } from "./dbConnection.js";
 const app = express();
@@ -38,8 +40,8 @@ app.use(compression());
 
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", addressRoutes);
-
-
+app.use("/api/v1", categoryRoutes);
+app.use("/api/v1", QualificationRoute);
 
 const server = http.createServer(app);
 // Set a timeout of 10 minutes (600000 milliseconds)
