@@ -1,6 +1,5 @@
 class UserModel {
     constructor(
-      userId,
       fullName,
       password,
       sponsorId,
@@ -15,7 +14,7 @@ class UserModel {
       createdAt,
       updatedAt
     ) {
-      this.userId = userId;
+      
       this.fullName = fullName;
       this.password = password;
       this.sponsorId = sponsorId;
@@ -33,7 +32,7 @@ class UserModel {
   
     fromJson(jsonData) {
       return new UserModel(
-        jsonData.userId,
+       
         jsonData.fullName ?? "Not Available",
         jsonData.password,
         jsonData.sponsorId.toLowerCase() ?? "",
@@ -42,7 +41,7 @@ class UserModel {
         jsonData?.image ?? "",
         jsonData.dob ?? "dd-mm-yyyy",
         jsonData.status != null ? JSON.parse(jsonData.status) : false,
-        jsonData.role ?? "individual",
+        jsonData.role ?? "admin",
         jsonData?.isVerified != null ? JSON.parse(jsonData.isVerified) : false,
         jsonData.rewardId ?? [],
         jsonData.createdAt ?? new Date(),
@@ -54,7 +53,7 @@ class UserModel {
     // Function to convert User instance to a JSON object suitable for database insertion
     toDatabaseJson() {
       return {
-        userId: this.userId,
+       
         fullName: this.fullName,
         password: this.password,
         sponsorId: this.sponsorId,
@@ -74,8 +73,7 @@ class UserModel {
     // Data to client
     toClientJson() {
       return {
-        id: this.userId,
-        userId: this.userId,
+        
         fullName: this.fullName,
         sponsorId: this.sponsorId,
         email: this.email,
@@ -91,23 +89,23 @@ class UserModel {
       };
     }
   
-    toMemberJson(e) {
-      return {
-        userId: e.userId,
-        id: e.userId,
-        fullName: e.fullName,
-        sponsorId: e.sponsorId,
-        email: e.email,
-        phone: e.phone,
-        status: e.status,
-        isVerified: e.isVerified,
-        createdAt: e.createdAt,
-      };
-    }
+    // toMemberJson(e) {
+    //   return {
+    //     userId: e.userId,
+    //     id: e.userId,
+    //     fullName: e.fullName,
+    //     sponsorId: e.sponsorId,
+    //     email: e.email,
+    //     phone: e.phone,
+    //     status: e.status,
+    //     isVerified: e.isVerified,
+    //     createdAt: e.createdAt,
+    //   };
+    // }
   
     toUpdateJson(body) {
       const updateJson = {};
-  
+   
       for (const key in body) {
         if (key !== "id" && this.hasOwnProperty(key) && body[key] !== undefined && body[key] !== "") {
           let value = body[key];
@@ -128,6 +126,7 @@ class UserModel {
       }
   
       updateJson.updatedAt = new Date();
+      
       return updateJson;
     }
   

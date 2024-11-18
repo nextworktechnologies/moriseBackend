@@ -1,6 +1,5 @@
 class AddressModel {
     constructor(
-      id,
       userId,
       street,
       city,
@@ -10,7 +9,7 @@ class AddressModel {
       createdAt,
       updatedAt
     ) {
-      this.id = id;
+      
       this.userId = userId;
       this.street = street;
       this.city = city;
@@ -23,7 +22,6 @@ class AddressModel {
   
     fromJson(jsonData) {
       return new AddressModel(
-        jsonData._id ?? null,
         jsonData.userId ?? "",
         jsonData.street ?? "",
         jsonData.city ?? "",
