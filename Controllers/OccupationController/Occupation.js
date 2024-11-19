@@ -15,12 +15,12 @@ const collection = collections;
 class OccupationController {
   constructor() {}
   async getOccupation(page, limit) {
-    // const skip = parseInt(page) * limit;
+    const skip = parseInt(page) * limit;
     try {
       const result = await collection
         .occupationCollection()
         .find({})
-        // .skip(skip)
+        .skip(skip)
         .limit(limit)
         .toArray();
       if (result.length > 0) {

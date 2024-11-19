@@ -6,6 +6,11 @@ import "dotenv/config";
 import "./dbConnection.js";
 import userRoutes from "./Routes/UserRoute.js";
 import addressRoutes from "./Routes/AddressRoute.js";
+import documentRoutes from "./Routes/DocumentRoute.js";
+import occupationRoutes from "./Routes/OccupationRoute.js";
+import queryRoutes from "./Routes/QueryRoute.js";
+import paymentRoutes from "./Routes/PaymentHistoryRoute.js";
+import mediaRoutes from "./Routes/MediaRoute.js";
 import cors from "cors";
 import { connectToMongo } from "./dbConnection.js";
 const app = express();
@@ -32,7 +37,6 @@ const AllowedOrigin = (origin, callback) => {
   callback(null, isAllowed ? origin : null);
 };
 
-
 // Use CORS middleware with dynamic origin determination
 app.use(
   cors({
@@ -50,13 +54,13 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(compression());
 
-// app.use("/api/v1", userRoutes);
 app.use("/api/v1", documentRoutes);
 app.use("/api/v1", occupationRoutes);
 app.use("/api/v1", queryRoutes);
-
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", addressRoutes);
+app.use("/api/v1", paymentRoutes);
+app.use("/api/v1", mediaRoutes);
 
 const server = http.createServer(app);
 // Set a timeout of 10 minutes (600000 milliseconds)
