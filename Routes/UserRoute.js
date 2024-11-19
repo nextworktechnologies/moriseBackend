@@ -164,7 +164,7 @@ routes.get(
     try {
       const { page, limit = 10 } = req.query;
 
-      const val = await userController.getAllUser(page, limit);
+      const val = await userController.getAllUser(page, parseInt(limit));
       res.status(val.status).send(val);
     } catch (error) {
       res.status(serverError.status).send(serverError);
