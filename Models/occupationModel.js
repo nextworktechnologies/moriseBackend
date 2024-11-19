@@ -9,7 +9,7 @@ class occupationModel {
   }
   fromJson(jsonData) {
     return new occupationModel(
-      jsonData._id ?? null,
+      jsonData.id ?? null,
       jsonData.occupation ?? "",
       jsonData.type ?? "",
       jsonData.status ?? "",
@@ -19,6 +19,7 @@ class occupationModel {
   }
   toDatabaseJson() {
     return {
+      id: this.id,
       occupation: this.occupation,
       type: this.type,
       status: this.status,
@@ -45,3 +46,5 @@ class occupationModel {
     };
   }
 }
+
+export default occupationModel;

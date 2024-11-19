@@ -36,7 +36,6 @@ class documentModel {
       [jsonData.aadharFront ?? "", jsonData.aadharBack ?? ""] ?? "",
       jsonData.panCard ?? "",
       jsonData.passport ?? "",
-      jsonData.marksheet ?? "",
       [
         jsonData.matriculationCertificate ?? "",
         jsonData.intermediateCertificate ?? "",
@@ -88,19 +87,24 @@ class documentModel {
     for (const key in body) {
       if (
         key !== "id" &&
-        this.hasOwnProperty(key) &&
         body[key] !== null &&
         body[key] !== undefined &&
         body[key] !== ""
       ) {
-        let value = body[key];
+        const value = body[key];
 
-        // Handle arrays (like addharCard and qualification)
+        // Handle arrays by filtering out invalid items
         if (Array.isArray(value)) {
           updateJson[key] = value.filter(
             (item) => item !== null && item !== undefined && item !== ""
           );
-        } else {
+        }
+        // Explicitly handle file buffers by checking if the key is an object with a `buffer` property
+        else if (typeof value === "object" && value.buffer instanceof Buffer) {
+          updateJson[key] = value.buffer; // Use the buffer directly
+        }
+        // Otherwise, add the value directly
+        else {
           updateJson[key] = value;
         }
       }
@@ -110,3 +114,5 @@ class documentModel {
     return updateJson;
   }
 }
+
+export default documentModel;

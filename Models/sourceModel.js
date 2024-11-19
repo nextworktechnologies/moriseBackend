@@ -1,6 +1,6 @@
 class SourceModel {
     constructor(
-      id,
+    
       title,
       description,
       other,
@@ -10,7 +10,7 @@ class SourceModel {
       createdAt,
       updatedAt
     ) {
-      this.id = id;
+    
       this.title = title;
       this.description = description;
       this.other = other;
