@@ -17,6 +17,9 @@ import occupationRoutes from "./Routes/OccupationRoute.js";
 import queryRoutes from "./Routes/QueryRoute.js";
 import cors from "cors";
 
+import paymentRoutes from "./Routes/PaymentHistoryRoute.js";
+import mediaRoutes from "./Routes/MediaRoute.js";
+
 const app = express();
 
 // Define a function to determine the allowed origin dynamically
@@ -68,6 +71,14 @@ app.use("/api/v1", SourceRoute);
 app.use("/api/v1", documentRoutes);
 app.use("/api/v1", occupationRoutes);
 app.use("/api/v1", queryRoutes);
+app.use("/api/v1", documentRoutes);
+app.use("/api/v1", occupationRoutes);
+app.use("/api/v1", queryRoutes);
+app.use("/api/v1", userRoutes);
+app.use("/api/v1", addressRoutes);
+app.use("/api/v1", paymentRoutes);
+app.use("/api/v1", mediaRoutes);
+
 const server = http.createServer(app);
 // Set a timeout of 10 minutes (600000 milliseconds)
 server.setTimeout(1000000);

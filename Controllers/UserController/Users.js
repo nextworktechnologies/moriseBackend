@@ -216,10 +216,18 @@ async getAllUser(page, limit) {
                                     expiresIn: "1d",
                                     }
                                 );
+                          
+                                const cookieData = {
+                                  token: token,
+                                  userId: result._id,
+                                  username: result.fullName,
+                              };
+
+
 
                           return res
                           .status(loggedIn.status)
-                          .cookie("authToken", token, {
+                          .cookie("authData", JSON.stringify(cookieData), {
                             httpOnly: true,
                             maxAge: 1 * 24 * 60 * 60 * 1000,
                             secure: true, // Set to false for local development
@@ -229,7 +237,8 @@ async getAllUser(page, limit) {
                             ...loggedIn,
                             data: {
                               token: token,
-                              userId: result._id
+                              userId: result._id,
+                              username:result.fullName
                             },
                           });
                             }else{

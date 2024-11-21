@@ -194,18 +194,22 @@ class Auth {
       const userId =
         req.headers?.userid ??
         req.headers?.userId;
+
+
       if (userId === null || !token || token === undefined) {
         return res.status(signUp.status).send(signUp);
 
       }
 
       jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if (err || decoded?.userId !== userId) {
+        if (err || decoded?._id !== userId) {
+          
           return res.status(expired.status).send(expired);
         }
         return next();
       });
     } catch (err) {
+
       return res.status(serverError.status).send(serverError);
     }
 

@@ -35,7 +35,7 @@ class UserModel {
        
         jsonData.fullName ?? "Not Available",
         jsonData.password,
-        jsonData.sponsorId.toLowerCase() ?? "",
+        jsonData.sponsorId ?? "",
         jsonData.email ?? "",
         jsonData.phone,
         jsonData?.image ?? "",

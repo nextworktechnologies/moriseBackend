@@ -1,6 +1,5 @@
 class mediaModel {
   constructor(
-    id,
     title,
     path,
     category,
@@ -10,7 +9,6 @@ class mediaModel {
     createdAt,
     updatedAt
   ) {
-    this.id = id;
     this.title = title;
     this.path = path;
     this.category = category;
@@ -22,7 +20,6 @@ class mediaModel {
   }
   fromJson(jsonData) {
     return new mediaModel(
-      jsonData._id ?? null,
       jsonData.title ?? "",
       jsonData.path ?? "",
       jsonData.category ?? "",
@@ -47,7 +44,6 @@ class mediaModel {
   }
   toClientJson() {
     return {
-      id: this.id,
       title: this.title,
       path: this.path,
       category: this.category,
@@ -71,3 +67,5 @@ class mediaModel {
     };
   }
 }
+
+export default mediaModel;

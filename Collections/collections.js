@@ -11,6 +11,7 @@ const collections = {
   qualificationCollection: () => client.db(process.env.MONGO_DATABASE).collection("qualification"),
   queryCollection: () => client.db(process.env.MONGO_DATABASE).collection("query"),
   sourceCollection: () => client.db(process.env.MONGO_DATABASE).collection("source"),
+  paymentCollection: () => client.db(process.env.MONGO_DATABASE).collection("paymentHistory"),
 };
 
 export default collections;

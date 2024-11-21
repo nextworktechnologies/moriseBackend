@@ -104,7 +104,7 @@ class QueryController {
 
       const result = await collection.queryCollection().updateOne(
         { _id: new ObjectId(id) },
-        { $set: { status, updatedAt: new Date() } } // Update status and timestamp
+        { $set: { status, updatedAt: new Date() } } 
       );
 
       if (result.matchedCount === 0) {
