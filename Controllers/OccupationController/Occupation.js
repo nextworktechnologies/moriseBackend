@@ -49,7 +49,8 @@ class OccupationController {
       const existingOccupation = await collection
         .occupationCollection()
         .findOne({ id: add.id });
-
+   
+        console.log("existingOccupation ",existingOccupation )
       if (existingOccupation) {
         return {
           status: "error",

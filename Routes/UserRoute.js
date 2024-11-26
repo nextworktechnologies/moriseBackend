@@ -140,7 +140,7 @@ routes.delete(
 // get user by Id
 routes.get(
   "/get-user-by-id/:id",
- authMiddleware.verifyToken,
+  authMiddleware.verifyToken,
   async (req, res) => {
     try {
       const val = await userController.getUserById(
@@ -159,7 +159,7 @@ routes.get(
 
 routes.get(
   "/get-all-user",
-  authMiddleware.verifyToken,
+  //authMiddleware.verifyToken,
   async (req, res) => {
     try {
       const { page, limit = 10 } = req.query;

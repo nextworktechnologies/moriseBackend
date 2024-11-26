@@ -186,35 +186,33 @@ class Auth {
   };
 
   // Verify if authorized token is valid
-  async verifyToken(req, res, next) {
+ async verifyToken(req, res, next) {
+    console.log("headers", req.headers);
+
     try {
       const token =
-        req.headers?.authorization?.split(" ")[1] ||
-        req.cookies?.authToken;
-      const userId =
-        req.headers?.userid ??
-        req.headers?.userId;
-
+        req.headers?.authorization?.split(" ")[1] || req.cookies?.authToken;
+      const userId = req.headers?.userid ?? req.headers?.userId;
+      console.log(token, userId);
 
       if (userId === null || !token || token === undefined) {
         return res.status(signUp.status).send(signUp);
-
       }
 
       jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        console.log(err, decoded);
+
         if (err || decoded?._id !== userId) {
-          
           return res.status(expired.status).send(expired);
         }
         return next();
       });
     } catch (err) {
-
       return res.status(serverError.status).send(serverError);
     }
-
   }
 
+  
   async verifyUser(req, res, next) {
     try {
       const user = collections.userCollection().findOne({ userId: req.body?.userId });

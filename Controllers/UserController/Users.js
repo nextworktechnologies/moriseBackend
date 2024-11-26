@@ -176,7 +176,46 @@ async getAllUser(page, limit) {
   console.log(limit, page)
   const skip = parseInt(page) * limit;
   try {
-    const result = await collection.userCollection().find({}).skip(skip).limit(limit).toArray();
+    // const result = await collection.userCollection().find({}).skip(skip).limit(limit).toArray();
+    const result = await collection.userCollection().aggregate([{
+     $lookup: {
+  from: 'address',          // Collection name to join
+  localField: '_id',         // Field from the "userCollection" to match
+  foreignField: 'userId',    // Field in the "address" collection that references the user's _id
+  as: 'address'              // Alias to store the resulting matched documents (addresses)
+},
+ },
+   {
+    // Step 2: Lookup the media collection to join media data
+    $lookup: {
+      from: "media",               // The collection we want to join
+      localField: "_id",           // The field in the user collection that holds the user _id
+      foreignField: "userId",      // The field in the media collection that stores the user _id
+      as: "userMedia"              // Alias to store the matched media data
+    }
+  }
+ ,
+  {
+    $addFields: {
+      address: {
+        $map: {
+          input: '$address',         // Input is the array of addresses
+          as: 'addr',
+          in: {
+            // Convert 'userId' to ObjectId if it's a string
+            userId: { $toObjectId: '$$addr.userId' },  
+            street: '$$addr.street',
+            city: '$$addr.city',
+            state: '$$addr.state',
+            country: '$$addr.country',
+            postalCode: '$$addr.postalCode',
+            createdAt: '$$addr.createdAt',
+            updatedAt: '$$addr.updatedAt'
+          }
+        }
+      }
+    }
+  }]).skip(skip).limit(limit).toArray();
     if (result.length > 0) {
       
       return {

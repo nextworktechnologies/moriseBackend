@@ -10,7 +10,7 @@ import categoryRoutes from "./Routes/CategoryRoute.js"
 import QualificationRoute from "./Routes/QualificationRoute.js"
 import SourceRoute from "./Routes/SourceRoute.js"
 import { connectToMongo } from "./dbConnection.js";
-
+import TestimonialRoute from "./Routes/TestimonialRoute.js"
 // import userRoutes from "./Routes/UserRoute.js";
 import documentRoutes from "./Routes/DocumentRoute.js";
 import occupationRoutes from "./Routes/OccupationRoute.js";
@@ -78,7 +78,7 @@ app.use("/api/v1", userRoutes);
 app.use("/api/v1", addressRoutes);
 app.use("/api/v1", paymentRoutes);
 app.use("/api/v1", mediaRoutes);
-
+app.use("/api/v1", TestimonialRoute);
 const server = http.createServer(app);
 // Set a timeout of 10 minutes (600000 milliseconds)
 server.setTimeout(1000000);

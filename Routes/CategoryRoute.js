@@ -130,7 +130,7 @@ routes.delete(
 
 routes.get(
     "/get-all-category",
-    authMiddleware.verifyToken,
+   // authMiddleware.verifyToken,
     async (req, res) => {
       try {
         const { page, limit = 10 } = req.query;

@@ -11,31 +11,31 @@ import {
     notExist,
     adddelete
   } from "../../Responses/index.js";
-  import AddressModel from "../../Models/addressModel.js";
+  import TestimonialsModel from "../../Models/testimonialModel.js";
   import collections from "../../Collections/collections.js";
   
-  const address = new AddressModel();
+  const testimonials = new TestimonialsModel();
   
   // Collections
   
   const collection = collections;
   
   
-  class Address {
+  class Testimonial {
   
     constructor() { }
   
-    async getAddress(page, limit) {
+    async getTestimonial(page, limit) {
       const skip = parseInt(page) * limit;
       try {
-        const result = await collection.addressCollection().find({}).skip(skip).limit(limit).toArray();
+        const result = await collection.testimonialsCollection().find({}).skip(skip).limit(limit).toArray();
         if (result.length > 0) {
           let data = [];
           result.map((e) => {
-            data.push(address.fromJson(e));
+            data.push(testimonials.fromJson(e));
           });
           return {
-            ...fetched("Address"),
+            ...fetched("Testimonials"),
             data: data
           };
         } else {
@@ -49,17 +49,17 @@ import {
       }
     }
   
-    async  createAddress(body) {
+    async  createTestimonial(body) {
        let id=new ObjectId(body.userId)
-       body.userId=id
+      
         
-      const Address = address.fromJson(body);
+      const Testimonials = testimonials.fromJson(body);
       try {
-        const result = await collection.addressCollection().insertOne(Address.toDatabaseJson());
+        const result = await collection.testimonialsCollection().insertOne(Testimonials.toDatabaseJson());
         console.log("result",result)
         if (result ) {
           return {
-            ...columnCreated("Address"),
+            ...columnCreated("Testimonials"),
             data: {
               id: result.insertedId,
               data: result
@@ -74,17 +74,16 @@ import {
       }
     }
   
-    async getAddressByUserId(id) {
-       
+    async getTestimonialByUserId(id) {
+        let Id=new ObjectId(id)
       try {
-        const result = await collection.addressCollection()
-          .find({
-            userId: id,
+        const result = await collection.testimonialsCollection().findOne({
+            _id: Id,
           })
-          .toArray();
-        if (result.length > 0) {
+         
+        if (result) {
           return {
-            ...fetched("Address"),
+            ...fetched("Testimonial"),
             data: result
           };
         } else {
@@ -99,9 +98,9 @@ import {
       }
     }
   
-    async getAddressById(id) {
+    async getTestimonialById(id) {
       try {
-        const result = await collection.addressCollection().findOne({
+        const result = await collection.testimonialsCollection().findOne({
           _id: new ObjectId(id),
         });
         if (result) {
@@ -121,38 +120,39 @@ import {
       }
     }
   
-    async  updateAddress(body) {
+    async  updateTestimonial(body) {
       try {
         const {
           id
         } = body;
-        const add = address.toUpdateJson(body);
+        let Id=new ObjectId(id)
+        const testimonial = testimonials.toUpdateJson(body);
       
-        const result = await collection.addressCollection().updateOne({
-          userId: id.toLowerCase()
+        const result = await collection.testimonialsCollection().updateOne({
+          _id: Id
         }, {
           $set: {
-            ...add,
+            ...testimonial,
           },
           
         });
         if (result.modifiedCount > 0) {
           return {
-            ...columnUpdated("Address"),
+            ...columnUpdated("testimonials"),
             data: result
           };
         } else {
-          return InvalidId("Address");
+          return InvalidId("testimonials");
         }
       } catch (err) {
         return serverError;
       }
     }
   
-    async getAddressBycode(code, page, limit) {
+    async getTestimonialBycode(code, page, limit) {
       let skip = parseInt(page) * limit;
       try {
-        const res = await collection.addressCollection.find({
+        const res = await collection.testimonialsCollection().find({
           postalCode: code
         }).skip(skip).limit(limit).toArray();
         if (res && res.length > 0) {
@@ -171,19 +171,19 @@ import {
       }
     }
   
-    async deleteAddressById(id) {
-        console.log("id",id)
+    async deleteTestimonialById(id) {
+       let Id=new ObjectId(id)
       try {
-        const result = await collection.addressCollection().deleteOne({
-          userId: id,
+        const result = await collection.testimonialsCollection().deleteOne({
+          _id: Id,
         });
         console.log("result",result)
         if (result.deletedCount > 0) {        
           return {
-            ...adddelete("address")
+            ...adddelete("testimonial")
           };
         } else {
-          return InvalidId("Address");
+          return InvalidId("testimonial");
         }
       } catch (err) {
         console.error("Error:", err);
@@ -195,4 +195,4 @@ import {
     }
   }
   
-  export default Address;
+  export default Testimonial;

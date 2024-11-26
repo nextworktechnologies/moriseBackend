@@ -15,6 +15,12 @@ const collection = collections;
 class MediaController {
   constructor() {}
   async createMedia(body) {
+   
+   let category=new ObjectId(body.category)
+    
+   body.category=category 
+   console.log(body.category)
+
     const add = media.fromJson(body);
     try {
       const result = await collection
@@ -39,12 +45,21 @@ class MediaController {
   async getMedia(page, limit) {
     const skip = parseInt(page) * limit;
     try {
-      const result = await collection
-        .mediaCollection()
-        .find({})
-        .skip(skip)
-        .limit(limit)
-        .toArray();
+      // const result = await collection
+      //   .mediaCollection()
+      //   .find({})
+      //   .skip(skip)
+      //   .limit(limit)
+      //   .toArray();
+
+        const result = await collection.mediaCollection().aggregate([{
+            $lookup: {
+      from: "categoy",           // The name of the collection you're joining with
+      localField: "category",     // The field in the mediaCollection that stores the category ID
+      foreignField: "_id",        // The field in the category collection that matches the category ID
+      as: "categoryData"          // The alias where the category data will be stored
+    }
+        }]).skip(skip).limit(limit).toArray();
 
       if (result.length > 0) {
         let data = [];
