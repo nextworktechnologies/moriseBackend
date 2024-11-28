@@ -9,6 +9,7 @@ const documents = new DocumentDetails();
 // Configure multer storage if needed
 const upload = multer();
 
+// Done
 routes.post(
   "/upload-documents",
   upload.fields([
@@ -45,10 +46,6 @@ routes.post(
       maxCount: 1,
     },
     {
-      name: "graduation",
-      maxCount: 1,
-    },
-    {
       name: "postGraduation",
       maxCount: 1,
     },
@@ -78,10 +75,20 @@ routes.post(
       const other = req.files?.other?.[0];
       const additional = req.files?.additional?.[0];
       // Validate required files
-      if (!aadharFront || !aadharBack || !sign) {
+
+      const missingFields = [];
+
+      if (!aadharFront) missingFields.push("aadharFront");
+      if (!aadharBack) missingFields.push("aadharBack");
+      if (!sign) missingFields.push("sign");
+      if (!image) missingFields.push("image");
+      if (!userId) missingFields.push("userId");
+
+      if (missingFields.length > 0) {
         return res.status(400).json({
           status: 400,
           message: "Missing required files",
+          missingFields: missingFields,
         });
       }
 
@@ -107,6 +114,7 @@ routes.post(
   }
 );
 
+// done
 routes.patch(
   "/update-documents",
   upload.fields([
@@ -213,4 +221,24 @@ routes.patch(
   }
 );
 
+// Done
+routes.get("/get-documents/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const val = await documents.getDocumentById(id);
+    res.status(val.status).send(val);
+  } catch (err) {
+    res.status(serverError.status).send(serverError);
+  }
+});
+
+routes.get("/get-all-documents", async (req, res) => {
+  try {
+    const { page, limit = 10 } = req.query;
+    const val = await documents.getAllDocuments(page, limit);
+    res.status(val.status).send(val);
+  } catch (error) {
+    res.status(serverError.status).send(serverError);
+  }
+});
 export default routes;

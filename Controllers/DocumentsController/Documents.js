@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
 const document = new documentModel();
 
 class DocumentDetails {
-  async getDocumentDetail(page, limit) {
+  async getAllDocuments(page, limit) {
     try {
       let skip = parseInt(page) * limit;
       const result = await collections
@@ -40,6 +40,25 @@ class DocumentDetails {
     }
   }
 
+  async getDocumentById(id) {
+    try {
+      const result = await collections
+        .documentCollection()
+        .findOne({ userId: id });
+      if (result) {
+        return {
+          ...fetched("Document"),
+          data: result,
+        };
+      } else {
+        return notExist("Document");
+      }
+    } catch (err) {
+      console.error("Error while getting document by id:", err);
+      return notExist("Document");
+    }
+  }
+
   async uploadDocument(
     aadharFront,
     aadharBack,
@@ -57,6 +76,8 @@ class DocumentDetails {
     try {
       // Create user folder
       console.log("dirname", __dirname);
+      console.log("path", path);
+
       const userFolder = path.join(__dirname, "../../", "uploads", userId);
       console.log("userFolder", userFolder);
 
@@ -100,7 +121,7 @@ class DocumentDetails {
         userId,
         files: savedFiles,
         uploadedAt: new Date(),
-        status: "pending", 
+        status: "pending",
       };
 
       // Add to database if you have a collection

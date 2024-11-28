@@ -27,12 +27,14 @@ const collection = collections;
 class Auth {
   // is Address Exist
   async addressExist(req, res, next) {
-    try { 
+    try {
       const userId = req.body?.userId || req.cookies?.userId;
       if (userId === null) {
         return res.status(idNotFound.status).send(idNotFound);
       }
-      let userCount = await collection.userCollection().countDocuments({ userId: userId.toLowerCase() });
+      let userCount = await collection
+        .userCollection()
+        .countDocuments({ userId: userId.toLowerCase() });
       if (userCount < 1) {
         return tryAgain;
       }
@@ -51,9 +53,7 @@ class Auth {
 
   // UserExist with user Id or not
   isValidUserId = async (req, res, next) => {
-    let userId = req.body.userId ??
-      req.headers?.userid ??
-      req.headers?.userId;
+    let userId = req.body.userId ?? req.headers?.userid ?? req.headers?.userId;
     try {
       if (userId === null || userId === undefined) {
         return res.status(idNotFound.status).send(idNotFound);
@@ -84,8 +84,7 @@ class Auth {
   // check if client is Admin
   checkAuth = async (req, res, next) => {
     try {
-      const userId =
-        req.headers?.userid ?? req.headers?.userId;
+      const userId = req.headers?.userid ?? req.headers?.userId;
       if (userId !== null && userId !== undefined) {
         // Source Admin types to check if user is valid auth
         const source = await collection.srcCollection().findOne({
@@ -119,9 +118,9 @@ class Auth {
       console.log(req.body);
       // Check if user with the same email exists or having account more than 10 with the same number
       const countUser = await collection.userCollection().countDocuments({
-        email: email
+        email: email,
       });
-      console.log("countUser",countUser)
+      console.log("countUser", countUser);
       if (countUser > 0) {
         return res.status(userExists.status).send({
           ...userExists,
@@ -129,7 +128,7 @@ class Auth {
       }
       // Check if more than 10 users with the same mobile number exist
       const countMobile = await collection.userCollection().countDocuments({
-        phone: phone
+        phone: phone,
       });
       if (countMobile > 5) {
         return res.status(mobileLimit.status).send(mobileLimit);
@@ -147,7 +146,7 @@ class Auth {
       const email = req.body?.email.toLowerCase();
       // Check if user with the same email exists or having account more than 10 with the same number
       const countUser = await collection.adminCollection().countDocuments({
-        email: email
+        email: email,
       });
       if (countUser > 0) {
         return res.status(userExists.status).send({
@@ -156,7 +155,7 @@ class Auth {
       }
       // Check if more than 10 users with the same mobile number exist
       const countMobile = await collection.adminCollection().countDocuments({
-        phone: phone
+        phone: phone,
       });
       if (countMobile > 10) {
         return res.status(mobileLimit.status).send(mobileLimit);
@@ -187,20 +186,22 @@ class Auth {
 
   // Verify if authorized token is valid
   async verifyToken(req, res, next) {
+    console.log("headers", req.headers);
+
     try {
       const token =
-        req.headers?.authorization?.split(" ")[1] ||
-        req.cookies?.authToken;
-      const userId =
-        req.headers?.userid ??
-        req.headers?.userId;
+        req.headers?.authorization?.split(" ")[1] || req.cookies?.authToken;
+      const userId = req.headers?.userid ?? req.headers?.userId;
+      console.log(token, userId);
+
       if (userId === null || !token || token === undefined) {
         return res.status(signUp.status).send(signUp);
-
       }
 
       jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if (err || decoded?.userId !== userId) {
+        console.log(err, decoded);
+
+        if (err || decoded?._id !== userId) {
           return res.status(expired.status).send(expired);
         }
         return next();
@@ -208,20 +209,20 @@ class Auth {
     } catch (err) {
       return res.status(serverError.status).send(serverError);
     }
-
   }
 
   async verifyUser(req, res, next) {
     try {
-      const user = collections.userCollection().findOne({ userId: req.body?.userId });
+      const user = collections
+        .userCollection()
+        .findOne({ userId: req.body?.userId });
       if (user && user?.isVerified) {
-        return next()
+        return next();
       } else {
         return res.status(notVerified.status).send(notVerified);
       }
     } catch (err) {
       return res.status(serverError.status).send(serverError);
-
     }
   }
 
@@ -230,7 +231,9 @@ class Auth {
       let { status = null } = req.body;
       const userId = req.headers.userid ?? req.headers.userId;
       if (req.body?.type === "withdraw") {
-        let countWithdraw = await collections.transCollection().countDocuments({ $and: [{ userId: userId }, { status: false }, { type: "withdraw" }] });
+        let countWithdraw = await collections.transCollection().countDocuments({
+          $and: [{ userId: userId }, { status: false }, { type: "withdraw" }],
+        });
 
         if (countWithdraw > 0) {
           return res.status(withdrawReported.status).send(withdrawReported);
@@ -239,15 +242,13 @@ class Auth {
       console.log("withdraw 1", req.body);
       if (isNaN(parseFloat(req.body.amount))) {
         return res.status(unauthorized.status).send(unauthorized);
-
       }
       if (parseFloat(req.body.amount) < 500) {
         return res.status(minLimit.status).send(minLimit);
       }
       if (status === true) {
         return res.status(unauthorized.status).send(unauthorized);
-      }
-      else {
+      } else {
         req.body.status = true;
         return next();
       }
@@ -256,7 +257,6 @@ class Auth {
       return res.status(serverError.status).send(serverError);
     }
   }
-
 
   // Check storage limit
   storageLimit = async (req, res, next) => {
@@ -267,14 +267,18 @@ class Auth {
           userId: req.body?.userId,
         })
         .toArray();
-      const user = await collections.userCollection().findOne({ userId: req.body?.userId });
+      const user = await collections
+        .userCollection()
+        .findOne({ userId: req.body?.userId });
 
       if (connection.length > 0) {
         let condition = connection.find((e) => {
           return e.status === false;
         });
         if (condition && !condition?.status) {
-          await collections.connCollection().deleteOne({ _id: new ObjectId(condition._id) });
+          await collections
+            .connCollection()
+            .deleteOne({ _id: new ObjectId(condition._id) });
         }
 
         const source = await collection.srcCollection().findOne({
@@ -290,8 +294,9 @@ class Auth {
           totalStorage += parseFloat(e.storage) || 0;
         });
 
-        if ((user && user.type !== "organisation")
-          &&
+        if (
+          user &&
+          user.type !== "organisation" &&
           (parseFloat(req.body?.storage) > parseInt(source.rule) ||
             totalStorage >= parseInt(source.range))
         ) {
@@ -339,13 +344,16 @@ class Auth {
     } else {
       return res.status(passNotMatched.status).send(passNotMatched);
     }
-  }
+  };
 
   // Check password pattern
   checkPassword = (req, res, next) => {
     const passwordPattern =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
-    if (!passwordPattern.test(req.body.password) && req.body.password?.length < 8) {
+    if (
+      !passwordPattern.test(req.body.password) &&
+      req.body.password?.length < 8
+    ) {
       return res.status(invalidPass.status).send(invalidPass);
     }
     next();
