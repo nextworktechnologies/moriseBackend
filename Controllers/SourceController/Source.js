@@ -11,24 +11,24 @@ import {
     notExist,
     adddelete
   } from "../../Responses/index.js";
-  import categoryModel from "../../Models/categoryModel.js";
+  import sourceModel from "../../Models/sourceModel.js";
   import collections from "../../Collections/collections.js";
   
-  const category = new categoryModel();
+  const source = new sourceModel();
   
   // Collections
   
   const collection = collections;
   
   
-  class Category {
+  class  Source {
   
     constructor() { }
   
-    async getCategory(page, limit) {
+    async getSource(page, limit) {
       const skip = parseInt(page) * limit;
       try {
-        const result = await collection.categoryCollection().find({}).skip(skip).limit(limit).toArray();
+        const result = await collection.sourceCollection().find({}).skip(skip).limit(limit).toArray();
         if (result.length > 0) {
           let data = [];
           result.map((e) => {
@@ -49,15 +49,15 @@ import {
       }
     }
   
-    async  createCategory(body) {
+    async  createSource(body) {
         
-      const Category = category.fromJson(body);
+      const sources = source.fromJson(body);
       try {
-        const result = await collection.categoryCollection().insertOne(Category.toDatabaseJson());
+        const result = await collection.sourceCollection().insertOne(sources.toDatabaseJson());
         console.log("result",result)
         if (result ) {
           return {
-            ...columnCreated("Category"),
+            ...columnCreated("Source"),
             data: {
               id: result.insertedId,
               data: result
@@ -97,19 +97,19 @@ import {
       }
     }
   
-    async getCategoryById(id) {
+    async getSourceById(id) {
       try {
-        const result = await collection.categoryCollection().findOne({
+        const result = await collection.sourceCollection().findOne({
           _id: new ObjectId(id),
         });
         if (result) {
          
           return {
-            ...fetched("Category"),
+            ...fetched("Source"),
             data: result
           };
         } else {
-          return InvalidId("Category");
+          return InvalidId("Source");
         }
       } catch (err) {
         return {
@@ -119,20 +119,20 @@ import {
       }
     }
   
-    async  updateCategory(body) {
+    async  updateSource(body) {
        
       try {
         const {
           id
         } = body;
         const objectId = new ObjectId(id)
-        const categories = category.toUpdateJson(body);
-        console.log("dd",categories)
-        const result = await collection.categoryCollection().updateOne({
+        const sources = source.toUpdateJson(body);
+        console.log("dd",sources)
+        const result = await collection.sourceCollection().updateOne({
           _id: objectId
         }, {
           $set: {
-            ...categories,
+            ...sources,
           },
           
         });
@@ -140,11 +140,11 @@ import {
         console.log("dd",result)
         if (result.modifiedCount > 0) {
           return {
-            ...columnUpdated("category"),
+            ...columnUpdated("Source"),
             data: result
           };
         } else {
-          return InvalidId("Category");
+          return InvalidId("Source");
         }
       } catch (err) {
         console.log(err)
@@ -174,20 +174,20 @@ import {
       }
     }
   
-    async deleteCategoryById(id) {
+    async deleteSourceById(id) {
       
         const objectId = new ObjectId(id)
       try {
-        const result = await collection.categoryCollection().deleteOne({
+        const result = await collection.sourceCollection().deleteOne({
           _id: objectId,
         });
         console.log("result",result)
         if (result.deletedCount > 0) {        
           return {
-            ...adddelete("delete")
+            ...adddelete("Source")
           };
         } else {
-          return InvalidId("delete");
+          return InvalidId("Source");
         }
       } catch (err) {
         console.error("Error:", err);
@@ -199,17 +199,17 @@ import {
     }
 
 
-    async getAllCategory(page, limit) {
+    async getSource(page, limit) {
         console.log(page, limit)
         const skip = parseInt(page-1) * limit;
         try {
-          const result = await collection.categoryCollection().find({}).skip(skip).limit(parseInt(limit)).toArray();
+          const result = await collection.sourceCollection().find({}).skip(skip).limit(parseInt(limit)).toArray();
       
           if (result.length > 0) {
        
         
             return {
-              ...fetched("category"),
+              ...fetched("Source"),
               data: result
             };
           } else {
@@ -225,4 +225,4 @@ import {
       }
   }
   
-  export default Category;
+  export default  Source;

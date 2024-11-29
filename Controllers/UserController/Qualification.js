@@ -11,17 +11,17 @@ import {
     notExist,
     adddelete
   } from "../../Responses/index.js";
-  import categoryModel from "../../Models/categoryModel.js";
+  import qualificationModel from "../../Models/qualificationModel.js";
   import collections from "../../Collections/collections.js";
   
-  const category = new categoryModel();
+  const qualification = new qualificationModel();
   
   // Collections
   
   const collection = collections;
   
   
-  class Category {
+  class  Qualification {
   
     constructor() { }
   
@@ -49,15 +49,15 @@ import {
       }
     }
   
-    async  createCategory(body) {
+    async  createQualification(body) {
         
-      const Category = category.fromJson(body);
+      const Qualification = qualification.fromJson(body);
       try {
-        const result = await collection.categoryCollection().insertOne(Category.toDatabaseJson());
+        const result = await collection.qualificationCollection().insertOne(Qualification.toDatabaseJson());
         console.log("result",result)
         if (result ) {
           return {
-            ...columnCreated("Category"),
+            ...columnCreated("Qualification"),
             data: {
               id: result.insertedId,
               data: result
@@ -97,19 +97,19 @@ import {
       }
     }
   
-    async getCategoryById(id) {
+    async getQualificationById(id) {
       try {
-        const result = await collection.categoryCollection().findOne({
+        const result = await collection.qualificationCollection().findOne({
           _id: new ObjectId(id),
         });
         if (result) {
          
           return {
-            ...fetched("Category"),
+            ...fetched("Qualification"),
             data: result
           };
         } else {
-          return InvalidId("Category");
+          return InvalidId("Qualification");
         }
       } catch (err) {
         return {
@@ -119,20 +119,20 @@ import {
       }
     }
   
-    async  updateCategory(body) {
+    async  updateQualification(body) {
        
       try {
         const {
           id
         } = body;
         const objectId = new ObjectId(id)
-        const categories = category.toUpdateJson(body);
-        console.log("dd",categories)
-        const result = await collection.categoryCollection().updateOne({
+        const qualifications = qualification.toUpdateJson(body);
+        console.log("dd",qualifications)
+        const result = await collection.qualificationCollection().updateOne({
           _id: objectId
         }, {
           $set: {
-            ...categories,
+            ...qualifications,
           },
           
         });
@@ -140,11 +140,11 @@ import {
         console.log("dd",result)
         if (result.modifiedCount > 0) {
           return {
-            ...columnUpdated("category"),
+            ...columnUpdated("qualification"),
             data: result
           };
         } else {
-          return InvalidId("Category");
+          return InvalidId("qualifications");
         }
       } catch (err) {
         console.log(err)
@@ -174,11 +174,11 @@ import {
       }
     }
   
-    async deleteCategoryById(id) {
+    async deleteQualificationById(id) {
       
         const objectId = new ObjectId(id)
       try {
-        const result = await collection.categoryCollection().deleteOne({
+        const result = await collection.qualificationCollection().deleteOne({
           _id: objectId,
         });
         console.log("result",result)
@@ -199,17 +199,17 @@ import {
     }
 
 
-    async getAllCategory(page, limit) {
+    async getQualification(page, limit) {
         console.log(page, limit)
         const skip = parseInt(page-1) * limit;
         try {
-          const result = await collection.categoryCollection().find({}).skip(skip).limit(parseInt(limit)).toArray();
+          const result = await collection.qualificationCollection().find({}).skip(skip).limit(parseInt(limit)).toArray();
       
           if (result.length > 0) {
        
         
             return {
-              ...fetched("category"),
+              ...fetched("qualification"),
               data: result
             };
           } else {
@@ -225,4 +225,4 @@ import {
       }
   }
   
-  export default Category;
+  export default  Qualification;

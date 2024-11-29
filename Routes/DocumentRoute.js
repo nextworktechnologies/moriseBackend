@@ -59,6 +59,8 @@ routes.post(
     },
   ]),
   async (req, res) => {
+    // console.log(req.body);
+
     try {
       const userId = req.body?.userId;
 
@@ -67,7 +69,8 @@ routes.post(
       const aadharBack = req.files?.aadharBack?.[0];
       const panFile = req.files?.panFile?.[0];
       const image = req.files?.image?.[0];
-      const sign = req.files?.sign?.[0];
+      const sign = req.body?.sign;
+
       const matriculation = req.files?.matriculation?.[0];
       const intermediate = req.files?.intermediate?.[0];
       const graduation = req.files?.graduation?.[0];

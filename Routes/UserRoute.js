@@ -154,15 +154,19 @@ routes.get(
 
 //get all user data
 
-routes.get("/get-all-user", authMiddleware.verifyToken, async (req, res) => {
-  try {
-    const { page, limit = 10 } = req.query;
+routes.get(
+  "/get-all-user",
+  //authMiddleware.verifyToken,
+  async (req, res) => {
+    try {
+      const { page, limit = 10 } = req.query;
 
-    const val = await userController.getAllUser(page, limit);
-    res.status(val.status).send(val);
-  } catch (error) {
-    res.status(serverError.status).send(serverError);
+      const val = await userController.getAllUser(page, parseInt(limit));
+      res.status(val.status).send(val);
+    } catch (error) {
+      res.status(serverError.status).send(serverError);
+    }
   }
-});
+);
 
 export default routes;

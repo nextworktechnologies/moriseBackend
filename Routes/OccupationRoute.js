@@ -20,9 +20,10 @@ routes.post("/create-occupation", async (req, res) => {
 
   try {
     const val = await occupation.createOccupation(req.body);
-
+ console.log()
     res.status(val.status).send(val);
   } catch (error) {
+    console.log("error",serverError.status)
     res.status(serverError.status).send(serverError);
   }
 });

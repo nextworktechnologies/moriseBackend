@@ -75,23 +75,60 @@ class DocumentDetails {
   ) {
     try {
       // Create user folder
-      console.log("dirname", __dirname);
-      console.log("path", path);
+      // console.log('sign',sign);
 
       const userFolder = path.join(__dirname, "../../", "uploads", userId);
-      console.log("userFolder", userFolder);
-
       if (!fs.existsSync(userFolder)) {
         fs.mkdirSync(userFolder, { recursive: true });
       }
 
       // Helper function to save file
-      const saveFile = (file, folder) => {
-        if (!file) return null;
-        const filePath = path.join(folder, file.originalname);
+
+
+  const saveFile = (file, folder) => {
+    if (!file) return null;
+
+    let filePath;
+
+    try {
+      // If the file is a base64 string
+      if (typeof file === "string" && file.startsWith("data:")) {
+        const matches = file.match(
+          /^data:([A-Za-z-+\/]+);base64,([A-Za-z0-9+/=]+)$/
+        );
+
+        if (matches && matches.length === 3) {
+          const fileType = matches[1]; // e.g., image/png
+          const base64Data = matches[2];
+          const extension = fileType.split("/")[1]; // Extract file extension
+
+          // Generate a filename for the file
+          filePath = path.join(folder, `file.${extension}`);
+          const buffer = Buffer.from(base64Data, "base64");
+          fs.writeFileSync(filePath, buffer);
+        } else {
+          console.error("Invalid base64 file format");
+          return null;
+        }
+      }
+      // If it's a regular file (e.g., from multer)
+      else if (file.originalname && file.buffer) {
+        filePath = path.join(folder, file.originalname);
         fs.writeFileSync(filePath, file.buffer);
-        return filePath;
-      };
+      }
+      // Invalid file type
+      else {
+        console.error("Unsupported file format or structure");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error saving file:", error.message);
+      return null;
+    }
+
+    return filePath;
+  };
+
 
       // Save all files
       const savedFiles = {

@@ -11,6 +11,9 @@ class UserModel {
     role,
     isVerified,
     rewardId,
+    initial,
+    qualification,
+    occupation,
     createdAt,
     updatedAt
   ) {
@@ -25,6 +28,9 @@ class UserModel {
     this.role = role;
     this.isVerified = isVerified;
     this.rewardId = rewardId;
+    this.initial = initial;
+    this.qualification = qualification;
+    this.occupation = occupation;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
@@ -33,7 +39,7 @@ class UserModel {
     return new UserModel(
       jsonData.fullName ?? "Not Available",
       jsonData.password,
-      jsonData.sponsorId ?? "", //Todo: add toLowerCase()
+      jsonData.sponsorId ?? "",
       jsonData.email ?? "",
       jsonData.phone,
       jsonData?.image ?? "",
@@ -42,6 +48,9 @@ class UserModel {
       jsonData.role ?? "admin",
       jsonData?.isVerified != null ? JSON.parse(jsonData.isVerified) : false,
       jsonData.rewardId ?? [],
+      jsonData.initial ?? "",
+      (jsonData.qualification = ""),
+      (jsonData.occupation = ""),
       jsonData.createdAt ?? new Date(),
       jsonData.updatedAt ?? new Date()
     );
@@ -61,6 +70,9 @@ class UserModel {
       role: this.role,
       isVerified: this.isVerified,
       rewardId: this.rewardId,
+      initial: this.initial,
+      qualification: this.qualification,
+      occupation: this.occupation,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
@@ -77,26 +89,16 @@ class UserModel {
       dob: this.dob,
       status: this.status,
       role: this.role,
+
       isVerified: this.isVerified,
       rewardId: this.rewardId,
+      initial: this.initial,
+      qualification: this.qualification,
+      occupation: this.occupation,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
   }
-
-  // toMemberJson(e) {
-  //   return {
-  //     userId: e.userId,
-  //     id: e.userId,
-  //     fullName: e.fullName,
-  //     sponsorId: e.sponsorId,
-  //     email: e.email,
-  //     phone: e.phone,
-  //     status: e.status,
-  //     isVerified: e.isVerified,
-  //     createdAt: e.createdAt,
-  //   };
-  // }
 
   toUpdateJson(body) {
     const updateJson = {};

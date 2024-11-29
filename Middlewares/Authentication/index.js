@@ -185,7 +185,7 @@ class Auth {
   };
 
   // Verify if authorized token is valid
-  async verifyToken(req, res, next) {
+ async verifyToken(req, res, next) {
     console.log("headers", req.headers);
 
     try {
@@ -211,6 +211,7 @@ class Auth {
     }
   }
 
+  
   async verifyUser(req, res, next) {
     try {
       const user = collections

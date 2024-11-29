@@ -1,51 +1,54 @@
-class SourceModel {
+class TestimonialModel {
     constructor(
-    
-      title,
-      description,
-      other,
-      type,
-      status,
-      valide,
+      name,
+      designation,
+      description ,
+      rating,
+      video,
       createdAt,
       updatedAt
     ) {
-    
-      this.title = title;
+      
+      this.name = name;
+      this.designation = designation;
       this.description = description;
-      this.other = other;
-      this.type = type;
-      this.status = status;
-      this.valide = valide;
+      this.rating = rating;
+      this.video = video;
       this.createdAt = createdAt;
       this.updatedAt = updatedAt;
     }
   
     fromJson(jsonData) {
-      return new SourceModel(
-        jsonData._id ?? null,
-        jsonData.title,
-        jsonData.description,
-        jsonData.other,
-        jsonData.type,
-        jsonData.status != null ? JSON.parse(jsonData.status) : false,
-        jsonData.valide != null ? JSON.parse(jsonData.status) : false,
+      return new TestimonialModel(
+        jsonData.name ?? "",
+        jsonData.designation ?? "",
+        jsonData.description ?? "",
+        jsonData.rating ?? "",
+        jsonData.video ?? "",
         jsonData.createdAt ?? new Date(),
         jsonData.updatedAt ?? new Date()
       );
     }
   
     toDatabaseJson() {
-  
       return {
-        title: this.title,
+        name: this.name,
+        designation: this.designation,
         description: this.description,
-        other: this.other,
-        type: this.type,
-        status: this.status,
-        valide: this.valide,
+        rating: this.rating,
+        video:this.video,
         createdAt: this.createdAt,
         updatedAt: this.updatedAt,
+      };
+    }
+  
+    toClient() {
+      return {
+        name: this.name,
+        designation: this.designation,
+        description: this.description,
+        country: this.rating,
+        postalCode: this.postalCode,
       };
     }
   
@@ -53,7 +56,7 @@ class SourceModel {
       const updateJson = {};
   
       for (const key in body) {
-        if (key != "id" && this.hasOwnProperty(key) && body[key] !== undefined && body[key] !== "") {
+        if (key !== "id" && this.hasOwnProperty(key) && body[key] !== null && body[key] !== undefined && body[key] !== "") {
           let value = body[key];
   
           // Convert string representation of boolean to actual boolean
@@ -74,7 +77,7 @@ class SourceModel {
       updateJson.updatedAt = new Date();
       return updateJson;
     }
-  
   }
   
-  export default SourceModel;
+  export default TestimonialModel;
+  

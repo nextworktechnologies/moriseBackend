@@ -1,6 +1,6 @@
 class CategoryModel {
     constructor(
-      id,
+      
       title,
       description,
       type,
@@ -8,7 +8,7 @@ class CategoryModel {
       createdAt,
       updatedAt
     ) {
-      this.id = id;
+     
       this.title = title;
       this.description = description;
       this.type = type;
@@ -19,7 +19,7 @@ class CategoryModel {
   
     fromJson(jsonData) {
       return new CategoryModel(
-        jsonData._id ?? null,
+       
         jsonData.title ?? "",
         jsonData.description ?? "",
         jsonData.type ?? "",
@@ -32,7 +32,7 @@ class CategoryModel {
     toDatabaseJson() {
   
       return {
-        userId: this.userId,
+        
         title: this.title,
         description: this.description,
         type: this.type,
