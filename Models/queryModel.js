@@ -1,6 +1,5 @@
 class queryModel {
   constructor(
-    id,
     userId,
     title,
     description,
@@ -8,7 +7,6 @@ class queryModel {
     createdAt,
     updatedAt
   ) {
-    this.id = id;
     this.userId = userId;
     this.title = title;
     this.description = description;
@@ -18,7 +16,6 @@ class queryModel {
   }
   fromJson(jsonData) {
     return new queryModel(
-      jsonData._id ?? null,
       jsonData.userId ?? null,
       jsonData.title ?? "",
       jsonData.description ?? "",
@@ -40,7 +37,7 @@ class queryModel {
   }
   toClientJson() {
     return {
-      id: this.id,
+
       userId: this.userId,
       title: this.title,
       description: this.description,

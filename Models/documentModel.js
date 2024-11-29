@@ -1,6 +1,5 @@
 class documentModel {
   constructor(
-    id,
     userId,
     addharCard,
     panCard,
@@ -8,13 +7,12 @@ class documentModel {
     marksheet,
     qualification,
     other,
-    additional,
-    nocSign,
+    cv,
+    sign,
     passportPhoto,
     createdAt,
     updatedAt
   ) {
-    this.id = id;
     this.userId = userId;
     this.addharCard = addharCard;
     this.panCard = panCard;
@@ -22,8 +20,8 @@ class documentModel {
     this.marksheet = marksheet;
     this.qualification = qualification;
     this.other = other;
-    this.additional = additional;
-    this.nocSign = nocSign;
+    this.cv = cv;
+    this.sign = sign;
     this.passportPhoto = passportPhoto;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
@@ -31,7 +29,6 @@ class documentModel {
 
   fromJson(jsonData) {
     return new documentModel(
-      jsonData._id ?? null,
       jsonData.userId ?? null,
       [jsonData.aadharFront ?? "", jsonData.aadharBack ?? ""] ?? "",
       jsonData.panCard ?? "",
@@ -44,8 +41,8 @@ class documentModel {
       ] ?? "",
       jsonData.qualification ?? "",
       jsonData.other ?? "",
-      jsonData.additional ?? "",
-      jsonData.nocSign ?? "",
+      jsonData.cv ?? "",
+      jsonData.sign ?? "",
       jsonData.passportPhoto ?? "",
       jsonData.createdAt ?? new Date(),
       jsonData.updatedAt ?? new Date()
@@ -60,8 +57,8 @@ class documentModel {
       marksheet: this.marksheet,
       qualification: this.qualification,
       other: this.other,
-      additional: this.additional,
-      nocSign: this.nocSign,
+      cv: this.cv,
+      sign: this.sign,
       passportPhoto: this.passportPhoto,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,

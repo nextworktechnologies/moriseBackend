@@ -54,7 +54,7 @@ routes.post(
       maxCount: 1,
     },
     {
-      name: "additional",
+      name: "cv",
       maxCount: 1,
     },
   ]),
@@ -76,7 +76,7 @@ routes.post(
       const graduation = req.files?.graduation?.[0];
       const postGraduation = req.files?.postGraduation?.[0];
       const other = req.files?.other?.[0];
-      const additional = req.files?.additional?.[0];
+      const cv = req.files?.cv?.[0];
       // Validate required files
 
       const missingFields = [];
@@ -86,7 +86,7 @@ routes.post(
       if (!sign) missingFields.push("sign");
       if (!image) missingFields.push("image");
       if (!userId) missingFields.push("userId");
-
+      if (!cv) missingFields.push("cv");
       if (missingFields.length > 0) {
         return res.status(400).json({
           status: 400,
@@ -107,7 +107,7 @@ routes.post(
         graduation,
         postGraduation,
         other,
-        additional
+        cv
       );
       return res.status(result.status).send(result);
     } catch (err) {
@@ -166,7 +166,7 @@ routes.patch(
       maxCount: 1,
     },
     {
-      name: "additional",
+      name: "cv",
       maxCount: 1,
     },
   ]),
@@ -184,7 +184,7 @@ routes.patch(
       const graduation = req.files?.graduation?.[0];
       const postGraduation = req.files?.postGraduation?.[0];
       const other = req.files?.other?.[0];
-      const additional = req.files?.additional?.[0];
+      const cv = req.files?.cv?.[0];
       // Validate if the user has permission to update this document
       // if (req.user.id !== userId && req.user.role !== "admin") {
       //   return res.status(403).json({
@@ -205,7 +205,7 @@ routes.patch(
         graduation,
         postGraduation,
         other,
-        additional,
+        cv,
       });
 
       if (result.success) {
