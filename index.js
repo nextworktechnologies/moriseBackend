@@ -6,15 +6,16 @@ import "dotenv/config";
 import "./dbConnection.js";
 import userRoutes from "./Routes/UserRoute.js";
 import addressRoutes from "./Routes/AddressRoute.js";
-import categoryRoutes from "./Routes/CategoryRoute.js"
-import QualificationRoute from "./Routes/QualificationRoute.js"
-import SourceRoute from "./Routes/SourceRoute.js"
+import categoryRoutes from "./Routes/CategoryRoute.js";
+import QualificationRoute from "./Routes/QualificationRoute.js";
+import SourceRoute from "./Routes/SourceRoute.js";
 import { connectToMongo } from "./dbConnection.js";
-import TestimonialRoute from "./Routes/TestimonialRoute.js"
+import TestimonialRoute from "./Routes/TestimonialRoute.js";
 // import userRoutes from "./Routes/UserRoute.js";
 import documentRoutes from "./Routes/DocumentRoute.js";
 import occupationRoutes from "./Routes/OccupationRoute.js";
 import queryRoutes from "./Routes/QueryRoute.js";
+import callRoutes from "./Routes/BookCallRoute.js";
 import cors from "cors";
 
 import paymentRoutes from "./Routes/PaymentHistoryRoute.js";
@@ -61,7 +62,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(compression());
 
-
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", addressRoutes);
 app.use("/api/v1", categoryRoutes);
@@ -79,6 +79,7 @@ app.use("/api/v1", addressRoutes);
 app.use("/api/v1", paymentRoutes);
 app.use("/api/v1", mediaRoutes);
 app.use("/api/v1", TestimonialRoute);
+app.use("/api/v1", callRoutes);
 const server = http.createServer(app);
 // Set a timeout of 10 minutes (600000 milliseconds)
 server.setTimeout(1000000);

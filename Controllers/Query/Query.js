@@ -5,6 +5,7 @@ import {
   InvalidId,
   serverError,
   tryAgain,
+  columnCreated,
 } from "../../Responses/index.js";
 import queryModel from "../../Models/queryModel.js";
 import { ObjectId } from "mongodb";
@@ -21,9 +22,10 @@ class QueryController {
       const result = await collection
         .queryCollection()
         .insertOne(add.toDatabaseJson(body));
+
       if (result && result.insertedId) {
         return {
-          ...columnUpdated("Query"),
+          ...columnCreated("Query"),
           data: add.toClientJson(body),
         };
       } else {
@@ -102,10 +104,12 @@ class QueryController {
         };
       }
 
-      const result = await collection.queryCollection().updateOne(
-        { _id: new ObjectId(id) },
-        { $set: { status, updatedAt: new Date() } } 
-      );
+      const result = await collection
+        .queryCollection()
+        .updateOne(
+          { _id: new ObjectId(id) },
+          { $set: { status, updatedAt: new Date() } }
+        );
 
       if (result.matchedCount === 0) {
         return {
