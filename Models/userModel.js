@@ -9,6 +9,7 @@ class UserModel {
       dob,
       status,
       role,
+      accounttype,
       isVerified,
       rewardId,
       initial,
@@ -27,6 +28,7 @@ class UserModel {
       this.dob = dob;
       this.status = status;
       this.role = role;
+      this.accounttype =accounttype;
       this.isVerified = isVerified;
       this.rewardId = rewardId;
       this.initial=initial;
@@ -48,6 +50,7 @@ class UserModel {
         jsonData.dob ?? "dd-mm-yyyy",
         jsonData.status != null ? JSON.parse(jsonData.status) : false,
         jsonData.role ?? "admin",
+        jsonData.accounttype ?? "employee",
         jsonData?.isVerified != null ? JSON.parse(jsonData.isVerified) : false,
         jsonData.rewardId ?? [],
         jsonData.initial ?? "",
@@ -72,6 +75,7 @@ class UserModel {
         dob: this.dob,
         status: this.status,
         role: this.role,
+        accounttype: this.accounttype,
         isVerified: this.isVerified,
         rewardId: this.rewardId,
         initial:this.initial,
@@ -94,7 +98,7 @@ class UserModel {
         dob: this.dob,
         status: this.status,
         role: this.role,
-        
+        accounttype: this.accounttype,
         isVerified: this.isVerified,
         rewardId: this.rewardId,
         initial:this.initial,

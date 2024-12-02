@@ -16,12 +16,13 @@ import documentRoutes from "./Routes/DocumentRoute.js";
 import occupationRoutes from "./Routes/OccupationRoute.js";
 import queryRoutes from "./Routes/QueryRoute.js";
 import cors from "cors";
-
+import path from "path"
 import paymentRoutes from "./Routes/PaymentHistoryRoute.js";
 import mediaRoutes from "./Routes/MediaRoute.js";
-
+import { fileURLToPath } from 'url';
 const app = express();
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 // Define a function to determine the allowed origin dynamically
 const AllowedOrigin = (origin, callback) => {
   // Check if the origin is one of the allowed origins
@@ -61,7 +62,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(compression());
 
-
+app.use('/video', express.static(path.join(__dirname, 'uploads', 'video')));
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", addressRoutes);
 app.use("/api/v1", categoryRoutes);

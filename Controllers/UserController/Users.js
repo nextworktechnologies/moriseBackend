@@ -34,6 +34,7 @@ import {
     walletUpdated,
   } from "../../Responses/index.js";
 import { ComparePassword,HashPassword,} from "../../Middlewares/EncryptPassword/index.js";  
+import {generateUniqueSponsorID} from "../../Middlewares/SponserID/SponserId.js"
 import { options , sendMail, transponder } from "../../Mailer/index.js";
 import UserModel from "../../Models/userModel.js";
 import jwt from "jsonwebtoken";
@@ -58,10 +59,16 @@ class User {
 
   // New user registeration controller
   async register(body) {
+
+    
  
     const User = userModel.fromJson(body);
        const hashedPassword = await HashPassword(User.password);
        User.password = hashedPassword;
+     
+    const sponsorIdq= await generateUniqueSponsorID()  
+       User.sponsorId = sponsorIdq;
+
     
    // let placementId = body.placementId.toLowerCase();
     try {

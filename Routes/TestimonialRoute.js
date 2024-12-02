@@ -80,10 +80,11 @@ routes.post(
           message: "No file uploaded"
         });
       }
+      console.log(req.file)
 
       const testiData = {
         ...req.body,
-        video: req.file.path // or `uploads/${req.file.filename}`
+        video: req.file.filename // or `uploads/${req.file.filename}`
       };
     try {
       const val = await testimonial.createTestimonial({
@@ -93,7 +94,7 @@ routes.post(
       res.status(val.status).send(val);
     } catch (error) {
 
-        console.log(error)
+        console.log("error",error)
       res.status(serverError.status).send(serverError);
     }
   }
@@ -142,7 +143,7 @@ routes.put(
 routes.delete(
   "/delete-testimonial/:id",
 //   authMiddleware.verifyToken,
-//   authMiddleware.CheckObjectId,
+//   authMiddleware.CheckObjectId, 
 //   authMiddleware.checkAuth,
   async (req, res) => {
     try {
