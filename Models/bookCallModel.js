@@ -1,25 +1,25 @@
-class queryModel {
+class callModel {
   constructor(
     userId,
-    title,
-    description,
-    status = "open",
+    phoneNo,
+    dateAndTime,
+    status = "pending",
     createdAt,
     updatedAt
   ) {
     this.userId = userId;
-    this.title = title;
-    this.description = description;
+    this.phoneNo = phoneNo;
+    this.dateAndTime = dateAndTime;
     this.status = status;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
   fromJson(jsonData) {
-    return new queryModel(
+    return new callModel(
       jsonData.userId ?? null,
-      jsonData.title ?? "",
-      jsonData.description ?? "",
-      jsonData.status ?? "open",
+      jsonData.phoneNo ?? "",
+      jsonData.dateAndTime ?? "",
+      jsonData.status ?? "pending",
       jsonData.createdAt ?? new Date(),
       jsonData.updatedAt ?? new Date()
     );
@@ -27,8 +27,8 @@ class queryModel {
   toDatabaseJson() {
     return {
       userId: this.userId,
-      title: this.title,
-      description: this.description,
+      phoneNo: this.phoneNo,
+      dateAndTime: this.dateAndTime,
       status: this.status,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
@@ -37,8 +37,8 @@ class queryModel {
   toClientJson() {
     return {
       userId: this.userId,
-      title: this.title,
-      description: this.description,
+      phoneNo: this.phoneNo,
+      dateAndTime: this.dateAndTime,
       status: this.status,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
@@ -46,12 +46,12 @@ class queryModel {
   }
   toUpdateJson() {
     return {
-      title: this.title,
-      description: this.description,
+      phoneNo: this.phoneNo,
+      dateAndTime: this.dateAndTime,
       status: this.status,
       updatedAt: this.updatedAt,
     };
   }
 }
 
-export default queryModel;
+export default callModel;

@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
 const document = new documentModel();
 
 class DocumentDetails {
-  async getDocumentDetail(page, limit) {
+  async getAllDocuments(page, limit) {
     try {
       let skip = parseInt(page) * limit;
       const result = await collections
@@ -40,35 +40,88 @@ class DocumentDetails {
     }
   }
 
+  async getDocumentById(id) {
+    try {
+      const result = await collections
+        .documentCollection()
+        .findOne({ userId: id });
+      if (result) {
+        return {
+          ...fetched("Document"),
+          data: result,
+        };
+      } else {
+        return notExist("Document");
+      }
+    } catch (err) {
+      console.error("Error while getting document by id:", err);
+      return notExist("Document");
+    }
+  }
+
   async uploadDocument(
     aadharFront,
     aadharBack,
     panFile,
     sign,
-    image,
+    passportPhoto,
     userId,
     matriculationCertificate,
     intermediateCertificate,
     graduationCertificate,
     postGraduationCertificate,
     other,
-    additional
+    cv
   ) {
     try {
-      // Create user folder
-      console.log("dirname", __dirname);
       const userFolder = path.join(__dirname, "../../", "uploads", userId);
-      console.log("userFolder", userFolder);
-
       if (!fs.existsSync(userFolder)) {
         fs.mkdirSync(userFolder, { recursive: true });
       }
 
-      // Helper function to save file
       const saveFile = (file, folder) => {
+        console.log("file", file);
+
         if (!file) return null;
-        const filePath = path.join(folder, file.originalname);
-        fs.writeFileSync(filePath, file.buffer);
+
+        let filePath;
+
+        try {
+          // If the file is a base64 string
+          if (typeof file === "string" && file.startsWith("data:")) {
+            const matches = file.match(
+              /^data:([A-Za-z-+\/]+);base64,([A-Za-z0-9+/=]+)$/
+            );
+
+            if (matches && matches.length === 3) {
+              const fileType = matches[1]; // e.g., image/png
+              const base64Data = matches[2];
+              const extension = fileType.split("/")[1]; // Extract file extension
+
+              // Generate a filename for the file
+              filePath = path.join(folder, `file.${extension}`);
+              const buffer = Buffer.from(base64Data, "base64");
+              fs.writeFileSync(filePath, buffer);
+            } else {
+              console.error("Invalid base64 file format");
+              return null;
+            }
+          }
+          // If it's a regular file (e.g., from multer)
+          else if (file.originalname && file.buffer) {
+            filePath = path.join(folder, file.originalname);
+            fs.writeFileSync(filePath, file.buffer);
+          }
+          // Invalid file type
+          else {
+            console.error("Unsupported file format or structure");
+            return null;
+          }
+        } catch (error) {
+          console.error("Error saving file:", error.message);
+          return null;
+        }
+
         return filePath;
       };
 
@@ -78,7 +131,9 @@ class DocumentDetails {
         aadharBack: saveFile(aadharBack, userFolder),
         panFile: saveFile(panFile, userFolder),
         sign: saveFile(sign, userFolder),
-        image: image ? saveFile(image, userFolder) : null,
+        passportPhoto: passportPhoto
+          ? saveFile(passportPhoto, userFolder)
+          : null,
         matriculation: matriculationCertificate
           ? saveFile(matriculationCertificate, userFolder)
           : null,
@@ -92,7 +147,7 @@ class DocumentDetails {
           ? saveFile(postGraduationCertificate, userFolder)
           : null,
         other: other ? saveFile(other, userFolder) : null,
-        additional: additional ? saveFile(additional, userFolder) : null,
+        cv: saveFile(cv, userFolder),
       };
 
       // Save document details to database if needed
@@ -100,7 +155,7 @@ class DocumentDetails {
         userId,
         files: savedFiles,
         uploadedAt: new Date(),
-        status: "pending", 
+        status: "pending",
       };
 
       // Add to database if you have a collection

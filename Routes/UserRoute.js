@@ -3,32 +3,36 @@ import User from "../Controllers/UserController/Users.js";
 import { noIfsc, serverError, signUp } from "../Responses/index.js";
 import Auth from "../Middlewares/Authentication/index.js";
 import multer from "multer";
-import path from 'path';
+import path from "path";
 const routes = express.Router();
 //const upload = multer();
 
 // Configure storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/userprofile'); // Make sure this directory exists
+    cb(null, "uploads/userprofile"); // Make sure this directory exists
   },
   filename: function (req, file, cb) {
     // Ensure full name is available in req.body
-    const fullName = req.body.fullName ? req.body.fullName.replace(/\s+/g, '-') : 'default-name'; // Replace spaces with hyphens
-    
+    const fullName = req.body.fullName
+      ? req.body.fullName.replace(/\s+/g, "-")
+      : "default-name"; // Replace spaces with hyphens
+
     // Create a unique filename with full name, timestamp, and random number
-    const uniqueName = `${fullName}-${Date.now()}-${path.extname(file.originalname)}`;
+    const uniqueName = `${fullName}-${Date.now()}-${path.extname(
+      file.originalname
+    )}`;
 
     // Set the filename
     cb(null, uniqueName);
-  }
+  },
 });
 
 // File filter
 const fileFilter = (req, file, cb) => {
   // Accept images only
   if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
-    return cb(new Error('Only image files are allowed!'), false);
+    return cb(new Error("Only image files are allowed!"), false);
   }
   cb(null, true);
 };
@@ -38,8 +42,8 @@ const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
-  }
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
 });
 // Controllers
 const userController = new User();
@@ -47,38 +51,36 @@ const authMiddleware = new Auth();
 
 //user registration api
 routes.post(
-    "/register-user",
-    upload.single("image"),
-    authMiddleware.userExists,
-    authMiddleware.checkPassword,
-    async (req, res) => {
-    
-
-      //check for profile image
-      if (!req.file) {
-        return res.status(400).send({
-          status: 400,
-          message: "No file uploaded"
-        });
-      }
-
-      const userData = {
-        ...req.body,
-        image: req.file.path // or `uploads/${req.file.filename}`
-      };
-      try {
-        const result = await userController.register(userData);
-       
-        return res.status(result.status).send(result);;
-      } catch (error) {
-        console.log("error",error)
-        return res.status(serverError.status).send({
-          ...serverError,
-          error,
-        });
-      }
+  "/register-user",
+  upload.single("image"),
+  authMiddleware.userExists,
+  authMiddleware.checkPassword,
+  async (req, res) => {
+    //check for profile image
+    if (!req.file) {
+      return res.status(400).send({
+        status: 400,
+        message: "No file uploaded",
+      });
     }
-  );
+
+    const userData = {
+      ...req.body,
+      image: req.file.path, // or `uploads/${req.file.filename}`
+    };
+    try {
+      const result = await userController.register(userData);
+
+      return res.status(result.status).send(result);
+    } catch (error) {
+      console.log("error", error);
+      return res.status(serverError.status).send({
+        ...serverError,
+        error,
+      });
+    }
+  }
+);
 
 // User Login API
 routes.post(
@@ -87,7 +89,7 @@ routes.post(
   authMiddleware.checkFields(["email", "password"]),
   authMiddleware.checkPassword,
   userController.login
-);  
+);
 
 // Update User API
 routes.put(
@@ -95,18 +97,17 @@ routes.put(
   upload.single("image"),
   authMiddleware.verifyToken,
   async (req, res) => {
-
-     //check for profile image
-     if (!req.file) {
+    //check for profile image
+    if (!req.file) {
       return res.status(400).send({
         status: 400,
-        message: "No file uploaded"
+        message: "No file uploaded",
       });
     }
 
     const userData = {
       ...req.body,
-      image: req.file.path // or `uploads/${req.file.filename}`
+      image: req.file.path, // or `uploads/${req.file.filename}`
     };
 
     try {
@@ -124,7 +125,6 @@ routes.put(
 routes.delete(
   "/delete-User/:id",
   authMiddleware.verifyToken,
- 
 
   async (req, res) => {
     try {
@@ -143,9 +143,7 @@ routes.get(
   authMiddleware.verifyToken,
   async (req, res) => {
     try {
-      const val = await userController.getUserById(
-      req.params?.id,
-      );
+      const val = await userController.getUserById(req.params?.id);
       res.status(val.status).send(val);
     } catch (error) {
       console.error("Error fetching User by user ID:", error.message);
@@ -153,7 +151,6 @@ routes.get(
     }
   }
 );
-
 
 //get all user data
 
@@ -172,4 +169,4 @@ routes.get(
   }
 );
 
-export default routes;  
+export default routes;

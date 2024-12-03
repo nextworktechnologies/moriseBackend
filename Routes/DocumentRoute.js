@@ -9,6 +9,7 @@ const documents = new DocumentDetails();
 // Configure multer storage if needed
 const upload = multer();
 
+// Done
 routes.post(
   "/upload-documents",
   upload.fields([
@@ -45,10 +46,6 @@ routes.post(
       maxCount: 1,
     },
     {
-      name: "graduation",
-      maxCount: 1,
-    },
-    {
       name: "postGraduation",
       maxCount: 1,
     },
@@ -57,11 +54,13 @@ routes.post(
       maxCount: 1,
     },
     {
-      name: "additional",
+      name: "cv",
       maxCount: 1,
     },
   ]),
   async (req, res) => {
+    // console.log(req.body);
+
     try {
       const userId = req.body?.userId;
 
@@ -70,18 +69,29 @@ routes.post(
       const aadharBack = req.files?.aadharBack?.[0];
       const panFile = req.files?.panFile?.[0];
       const image = req.files?.image?.[0];
-      const sign = req.files?.sign?.[0];
+      const sign = req.body?.sign;
+
       const matriculation = req.files?.matriculation?.[0];
       const intermediate = req.files?.intermediate?.[0];
       const graduation = req.files?.graduation?.[0];
       const postGraduation = req.files?.postGraduation?.[0];
       const other = req.files?.other?.[0];
-      const additional = req.files?.additional?.[0];
+      const cv = req.files?.cv?.[0];
       // Validate required files
-      if (!aadharFront || !aadharBack || !sign) {
+
+      const missingFields = [];
+
+      if (!aadharFront) missingFields.push("aadharFront");
+      if (!aadharBack) missingFields.push("aadharBack");
+      if (!sign) missingFields.push("sign");
+      if (!image) missingFields.push("image");
+      if (!userId) missingFields.push("userId");
+      if (!cv) missingFields.push("cv");
+      if (missingFields.length > 0) {
         return res.status(400).json({
           status: 400,
           message: "Missing required files",
+          missingFields: missingFields,
         });
       }
 
@@ -97,7 +107,7 @@ routes.post(
         graduation,
         postGraduation,
         other,
-        additional
+        cv
       );
       return res.status(result.status).send(result);
     } catch (err) {
@@ -107,6 +117,7 @@ routes.post(
   }
 );
 
+// done
 routes.patch(
   "/update-documents",
   upload.fields([
@@ -155,7 +166,7 @@ routes.patch(
       maxCount: 1,
     },
     {
-      name: "additional",
+      name: "cv",
       maxCount: 1,
     },
   ]),
@@ -173,7 +184,7 @@ routes.patch(
       const graduation = req.files?.graduation?.[0];
       const postGraduation = req.files?.postGraduation?.[0];
       const other = req.files?.other?.[0];
-      const additional = req.files?.additional?.[0];
+      const cv = req.files?.cv?.[0];
       // Validate if the user has permission to update this document
       // if (req.user.id !== userId && req.user.role !== "admin") {
       //   return res.status(403).json({
@@ -194,7 +205,7 @@ routes.patch(
         graduation,
         postGraduation,
         other,
-        additional,
+        cv,
       });
 
       if (result.success) {
@@ -213,4 +224,24 @@ routes.patch(
   }
 );
 
+// Done
+routes.get("/get-documents/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const val = await documents.getDocumentById(id);
+    res.status(val.status).send(val);
+  } catch (err) {
+    res.status(serverError.status).send(serverError);
+  }
+});
+
+routes.get("/get-all-documents", async (req, res) => {
+  try {
+    const { page, limit = 10 } = req.query;
+    const val = await documents.getAllDocuments(page, limit);
+    res.status(val.status).send(val);
+  } catch (error) {
+    res.status(serverError.status).send(serverError);
+  }
+});
 export default routes;
