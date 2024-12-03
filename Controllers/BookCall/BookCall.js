@@ -17,7 +17,6 @@ class BookCallController {
   constructor() {}
 
   async createCall(body) {
-    console.log("create a call", body);
 
     const add = call.fromJson(body);
     try {
