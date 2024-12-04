@@ -20,6 +20,7 @@ import cors from "cors";
 import path from "path";
 import paymentRoutes from "./Routes/PaymentHistoryRoute.js";
 import mediaRoutes from "./Routes/MediaRoute.js";
+import newpaymentRoutes from "./Routes/PaymentRoute.js"
 import { fileURLToPath } from "url";
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -38,7 +39,9 @@ const AllowedOrigin = (origin, callback) => {
     "http://192.168.0.193:3000",
     "http://192.168.0.193:3001",
     "http://192.168.0.150:3000",
-    "http://192.168.1.7:3000",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
   ];
   const isAllowed = allowedOrigins.includes(origin);
 
@@ -82,6 +85,7 @@ app.use("/api/v1", paymentRoutes);
 app.use("/api/v1", mediaRoutes);
 app.use("/api/v1", TestimonialRoute);
 app.use("/api/v1", callRoutes);
+app.use("/api/v1", newpaymentRoutes);
 const server = http.createServer(app);
 // Set a timeout of 10 minutes (600000 milliseconds)
 server.setTimeout(1000000);
