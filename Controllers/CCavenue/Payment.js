@@ -41,7 +41,7 @@ class PaymentHistoryController {
   }
 
   //payment initiate
-  async initiatePayment(body) {
+  async  initiatePayment(body) {
     try {
       const { amount } = body; // Amount received from frontend
       const orderId = `order_${Date.now()}`;
