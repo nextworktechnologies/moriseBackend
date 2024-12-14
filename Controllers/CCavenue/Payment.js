@@ -8,13 +8,13 @@ import {
 } from "../../Responses/index.js";
 import PaymentHistoryModel from "../../Models/PaymentHistoryModel.js";
 import { ObjectId } from "mongodb";
-import {decryptData} from "../../Middlewares/CryptoEncrypt/index.js"
+import { decryptData } from "../../Middlewares/CryptoEncrypt/index.js"
 const payment = new PaymentHistoryModel();
 const collection = collections;
 
 // Move generateInvoiceNumber inside the class and make it async
 class PaymentHistoryController {
-  constructor() {}
+  constructor() { }
 
   async generateInvoiceNumber() {
     try {
@@ -41,7 +41,7 @@ class PaymentHistoryController {
   }
 
   //payment initiate
-  async  initiatePayment(body) {
+  async initiatePayment(body) {
     try {
       const { amount } = body; // Amount received from frontend
       const orderId = `order_${Date.now()}`;
@@ -53,7 +53,7 @@ class PaymentHistoryController {
         .insertOne(add.toDatabaseJson(invoiceNo));
       //   const order = new Order(orderId, amount);
       //   Order.save(order); // Simulating order saving
-  
+
       // Payment data to be sent to CCAvenue
       const paymentData = {
         merchant_id: process.env.MID,
@@ -65,9 +65,8 @@ class PaymentHistoryController {
         return_url: "http://localhost:3001/api/v1/payment/response",
         cancel_url: "http://localhost:3001/api/v1/payment/cancel",
       };
-      console.log("result",result.length);
-     console.log(" paymentData",paymentData);
-      if (result ) {
+
+      if (result) {
         return {
           ...fetched("Address"),
           data: {
@@ -107,7 +106,7 @@ class PaymentHistoryController {
 
   async handleCancellation(body) {
     try {
-     res.json({ status: "cancelled" });
+      res.json({ status: "cancelled" });
     } catch (error) {
       console.log("error", error);
     }
