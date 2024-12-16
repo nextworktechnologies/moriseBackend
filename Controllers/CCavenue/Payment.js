@@ -8,7 +8,16 @@ import {
 } from "../../Responses/index.js";
 import PaymentHistoryModel from "../../Models/PaymentHistoryModel.js";
 import { ObjectId } from "mongodb";
+<<<<<<< HEAD
 import { decryptData } from "../../Middlewares/CryptoEncrypt/index.js"
+=======
+import {encrypt} from "../../Middlewares/Util/ccavutil.js"
+import {
+  decryptData,
+  encryptDatapayment,
+} from "../../Middlewares/CryptoEncrypt/index.js";
+import crypto from "crypto";
+>>>>>>> cff21add46ed638f2c2d340e21b4882cea0eb767
 const payment = new PaymentHistoryModel();
 const collection = collections;
 
@@ -62,16 +71,59 @@ class PaymentHistoryController {
         order_id: orderId,
         amount: amount,
         currency: "INR",
-        return_url: "http://localhost:3001/api/v1/payment/response",
-        cancel_url: "http://localhost:3001/api/v1/payment/cancel",
+        return_url: "http://localhost:3000/api/v1/payment/response",
+        cancel_url: "http://localhost:3000/api/v1/payment/cancel",
       };
 
+<<<<<<< HEAD
+=======
+      //Generate Md5 hash for the key and then convert in base64 string
+      var md5 = crypto
+        .createHash("md5")
+        .update(process.env.WORKING_KEY)
+        .digest();
+      var keyBase64 = Buffer.from(md5).toString("base64");
+
+      //Initializing Vector and then convert in base64 string
+      var ivBase64 = Buffer.from([
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
+        0x0c, 0x0d, 0x0e, 0x0f,
+      ]).toString("base64");
+      let payment_string = `merchant_id=${process.env.MID}&order_id=${orderId}&currency=INR&amount=${amount}.00&redirect_url=${paymentData.return_url}&cancel_url=${paymentData.cancel_url}&language=EN`;
+      var encRequest = encrypt(payment_string, keyBase64, ivBase64);
+
+      // function encryptData(data) {
+      //   const cipher = crypto.createCipheriv(
+      //     "aes-128-cbc",
+      //     process.env.WORKING_KEY,
+      //     Buffer.alloc(16, 0)
+      //   ); // CBC mode with 128-bit key
+      //   let encrypted = cipher.update(data, "utf-8", "base64");
+      //   encrypted += cipher.final("base64");
+      //   return encrypted;
+      // }
+
+      // const encryptedRequest = encryptData(JSON.stringify(paymentData));
+
+      console.log(" encryptedRequest", encRequest);
+
+      // Encrypt the payment data before sending it to CCAvenue
+      console.log("payment_string", payment_string);
+      const encryptedPaymentData = encryptDatapayment(
+        payment_string,
+        process.env.WORKING_KEY
+      );
+      console.log("Encrypted Payment Data: ", encryptedPaymentData);
+
+      // Respond with payment form data (to be submitted to CCAvenue)
+>>>>>>> cff21add46ed638f2c2d340e21b4882cea0eb767
       if (result) {
         return {
           ...fetched("Address"),
           data: {
             result: result.insertedId,
             data: paymentData,
+            token: encRequest, // Send the encrypted payment data
           },
         };
       }
