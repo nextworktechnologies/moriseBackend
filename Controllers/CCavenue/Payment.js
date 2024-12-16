@@ -8,16 +8,12 @@ import {
 } from "../../Responses/index.js";
 import PaymentHistoryModel from "../../Models/PaymentHistoryModel.js";
 import { ObjectId } from "mongodb";
-<<<<<<< HEAD
-import { decryptData } from "../../Middlewares/CryptoEncrypt/index.js"
-=======
-import {encrypt} from "../../Middlewares/Util/ccavutil.js"
+import { encrypt } from "../../Middlewares/Util/ccavutil.js"
 import {
   decryptData,
   encryptDatapayment,
 } from "../../Middlewares/CryptoEncrypt/index.js";
 import crypto from "crypto";
->>>>>>> cff21add46ed638f2c2d340e21b4882cea0eb767
 const payment = new PaymentHistoryModel();
 const collection = collections;
 
@@ -75,8 +71,6 @@ class PaymentHistoryController {
         cancel_url: "http://localhost:3000/api/v1/payment/cancel",
       };
 
-<<<<<<< HEAD
-=======
       //Generate Md5 hash for the key and then convert in base64 string
       var md5 = crypto
         .createHash("md5")
@@ -116,7 +110,6 @@ class PaymentHistoryController {
       console.log("Encrypted Payment Data: ", encryptedPaymentData);
 
       // Respond with payment form data (to be submitted to CCAvenue)
->>>>>>> cff21add46ed638f2c2d340e21b4882cea0eb767
       if (result) {
         return {
           ...fetched("Address"),
@@ -129,7 +122,6 @@ class PaymentHistoryController {
       }
       return notExist("Address");
       // Respond with payment form data (to be submitted to CCAvenue)
-      res.status(200).json(paymentData, result);
     } catch (error) {
       console.log("error", error);
     }
