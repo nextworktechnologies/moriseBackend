@@ -2,21 +2,21 @@ class PaymentHistoryModel {
   constructor(
     userId,
     amount,
-    type,
+    // type,
     transactionId,
     status,
     invoice,
-    verification,
+    // verification,
     createAt,
     updatedAt
   ) {
     this.userId = userId;
     this.amount = amount;
-    this.type = type;
+    // this.type = type;
     this.transactionId = transactionId;
     this.status = status;
     this.invoice = invoice;
-    this.verification = verification;
+    // this.verification = verification;
     this.createAt = createAt;
     this.updatedAt = updatedAt;
   }
@@ -25,11 +25,11 @@ class PaymentHistoryModel {
     return new PaymentHistoryModel(
       jsonData.userId ?? null,
       jsonData.amount ?? null,
-      jsonData.type ?? "",
+      // jsonData.type ?? "",
       jsonData.transactionId ?? null,
       jsonData.status ?? "",
       jsonData.invoice ?? null,
-      jsonData.verification ?? null,
+      // jsonData.verification ?? null,
       jsonData.createAt ?? new Date(),
       jsonData.updatedAt ?? new Date()
     );
@@ -38,11 +38,11 @@ class PaymentHistoryModel {
     return {
       userId: this.userId,
       amount: this.amount,
-      type: this.type,
+      // type: this.type,
       transactionId: this.transactionId,
       status: this.status,
       invoice: invoiceNo,
-      verification: this.verification,
+      // verification: this.verification,
       createAt: this.createAt,
       updatedAt: this.updatedAt,
     };
@@ -51,11 +51,11 @@ class PaymentHistoryModel {
     return {
       userId: this.userId,
       amount: this.amount,
-      type: this.type,
+      // type: this.type,
       transactionId: this.transactionId,
       status: this.status,
       invoice: invoiceNo,
-      verification: this.verification,
+      // verification: this.verification,
       createAt: this.createAt,
       updatedAt: this.updatedAt,
     };

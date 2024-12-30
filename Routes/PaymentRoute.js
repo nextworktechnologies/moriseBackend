@@ -28,9 +28,11 @@ routes.post("/payment", async (req, res) => {
 routes.post("/payment/response", async (req, res) => {
   try {
     const val = await paymentHistory.handleResponse(req.body);
+    console.log("val",val)
     res.status(val.status).send(val);
   } catch (error) {
     res.status(serverError.status).send(serverError);
+    console.log("error",error)
   }
 });
 

@@ -29,6 +29,7 @@ const __dirname = path.dirname(__filename);
 const AllowedOrigin = (origin, callback) => {
   // Check if the origin is one of the allowed origins
   const allowedOrigins = [
+    "https://test.ccavenue.com",
     "https://admin.knoone.com",
     "https://acc.knoone.com",
     "https://knoone.com",

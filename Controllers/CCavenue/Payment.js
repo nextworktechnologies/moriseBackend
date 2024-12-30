@@ -14,6 +14,8 @@ import {
   encryptDatapayment,
 } from "../../Middlewares/CryptoEncrypt/index.js";
 import crypto from "crypto";
+import { razorpay } from "../../Middlewares/Razorpay/index.js";
+
 const payment = new PaymentHistoryModel();
 const collection = collections;
 
@@ -48,75 +50,74 @@ class PaymentHistoryController {
   //payment initiate
   async   initiatePayment(body) {
     try {
-      const { amount } = body; // Amount received from frontend
+      const { amount, currency } = body; // Amount received from frontend
       const orderId = `order_${Date.now()}`;
       const invoiceNo = await this.generateInvoiceNumber();
+
+       const order = await razorpay.orders.create({
+         amount: amount * 100, // Amount in paisa
+         currency,
+       });
+      
+
       // Create a new order
-      const add = payment.fromJson(body);
-      const result = await collection
-        .paymentCollection()
-        .insertOne(add.toDatabaseJson(invoiceNo));
-      //   const order = new Order(orderId, amount);
-      //   Order.save(order); // Simulating order saving
+      // const add = payment.fromJson(body);
+      // const result = await collection
+      //   .paymentCollection()
+      //   .insertOne(add.toDatabaseJson(invoiceNo));
+      // //   const order = new Order(orderId, amount);
+      // //   Order.save(order); // Simulating order saving
 
-      // Payment data to be sent to CCAvenue
-      const paymentData = {
-        merchant_id: process.env.MID,
-        access_code: process.env.ACCESS_CODE,
-        working_key: process.env.WORKING_KEY,
-        order_id: orderId,
-        amount: amount,
-        currency: "INR",
-        return_url: "http://localhost:3000/api/v1/payment/response",
-        cancel_url: "http://localhost:3000/api/v1/payment/cancel",
-      };
+      // // Payment data to be sent to CCAvenue
+      // const paymentData = {
+      //   merchant_id: process.env.MID,
+      //   access_code: process.env.ACCESS_CODE,
+      //   working_key: process.env.WORKING_KEY,
+      //   order_id: orderId,
+      //   amount: amount,
+      //   currency: "INR",
+      //   //return_url: "https://api.trymorise.com/api/v1/payment/response",
+      //   cancel_url: "https://api.trymorise.com/api/v1/payment/cancel",
+      // };
 
-      //Generate Md5 hash for the key and then convert in base64 string
-      var md5 = crypto
-        .createHash("md5")
-        .update(process.env.WORKING_KEY)
-        .digest();
-      var keyBase64 = Buffer.from(md5).toString("base64");
+      // //Generate Md5 hash for the key and then convert in base64 string
+      // var md5 = crypto
+      //   .createHash("md5")
+      //   .update(process.env.WORKING_KEY)
+      //   .digest();
+      // var keyBase64 = Buffer.from(md5).toString("base64");
 
-      //Initializing Vector and then convert in base64 string
-      var ivBase64 = Buffer.from([
-        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
-        0x0c, 0x0d, 0x0e, 0x0f,
-      ]).toString("base64");
-      let payment_string = `merchant_id=${process.env.MID}&order_id=${orderId}&currency=INR&amount=${amount}.00&redirect_url=${paymentData.return_url}&cancel_url=${paymentData.cancel_url}&language=EN`;
-      var encRequest = encrypt(payment_string, keyBase64, ivBase64);
+      // //Initializing Vector and then convert in base64 string
+      // var ivBase64 = Buffer.from([
+      //   0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
+      //   0x0c, 0x0d, 0x0e, 0x0f,
+      // ]).toString("base64");
+      // let payment_string = `merchant_id=${process.env.MID}&order_id=${orderId}&currency=INR&amount=${amount}.00&redirect_url=${paymentData.return_url}&cancel_url=${paymentData.cancel_url}&language=EN`;
+      // var encRequest = encrypt(payment_string, keyBase64, ivBase64);
+      //   const paymentUrl = `https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction&merchant_id=${paymentData.merchant_id}&encRequest=${encRequest}&access_code=${paymentData.access_code}`;
 
-      // function encryptData(data) {
-      //   const cipher = crypto.createCipheriv(
-      //     "aes-128-cbc",
-      //     process.env.WORKING_KEY,
-      //     Buffer.alloc(16, 0)
-      //   ); // CBC mode with 128-bit key
-      //   let encrypted = cipher.update(data, "utf-8", "base64");
-      //   encrypted += cipher.final("base64");
-      //   return encrypted;
-      // }
+       
 
-      // const encryptedRequest = encryptData(JSON.stringify(paymentData));
+      // console.log(" encryptedRequest", encRequest);
 
-      console.log(" encryptedRequest", encRequest);
-
-      // Encrypt the payment data before sending it to CCAvenue
-      console.log("payment_string", payment_string);
-      const encryptedPaymentData = encryptDatapayment(
-        payment_string,
-        process.env.WORKING_KEY
-      );
-      console.log("Encrypted Payment Data: ", encryptedPaymentData);
+      // // Encrypt the payment data before sending it to CCAvenue
+      // console.log("payment_string", payment_string);
+      // const encryptedPaymentData = encryptDatapayment(
+      //   payment_string,
+      //   process.env.WORKING_KEY
+      // );
+      // console.log("Encrypted Payment Data: ", encryptedPaymentData);
 
       // Respond with payment form data (to be submitted to CCAvenue)
-      if (result) {
+      if (order) {
         return {
           ...fetched("Address"),
           data: {
-            result: result.insertedId,
-            data: paymentData,
-            token: encRequest, // Send the encrypted payment data
+           
+            data: order,
+            // data: paymentData,
+            // token: encRequest, // Send the encrypted payment data
+            // paymentUrl,
           },
         };
       }
@@ -131,20 +132,58 @@ class PaymentHistoryController {
   //handle payment response
 
   async handleResponse(body) {
+   
     try {
-      const encryptedData = body.encResp;
-      const decryptedData = decryptData(encryptedData);
+      console.log("body",body)
+          const {
+            razorpay_order_id,
+            razorpay_payment_id,
+            razorpay_signature,
+            user_id,
+            order_id,
+            amount 
+          } = body;
+            
+  const invoiceNo = await this.generateInvoiceNumber();
+   const add = payment.fromJson({
+     userId: user_id,
+     amount,
+     //  type,
+     transactionId: order_id,
+     status: true,
+     invoice: invoiceNo,
+     //  verification,
+   });
 
-      // Simulate parsing payment response
-      const paymentResponse = new URLSearchParams(decryptedData).toString();
-
-      if (paymentResponse.status === "Success") {
-        res.json({ status: "success", data: paymentResponse });
-      } else {
-        res.json({ status: "failure", data: paymentResponse });
-      }
+ 
+          const generated_signature = crypto
+            .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+            .update(razorpay_order_id + "|" + razorpay_payment_id)
+            .digest("hex");
+          
+            console.log("generated_signature", generated_signature);
+          if (generated_signature === razorpay_signature) {
+           // res.status(200).json({ success: true });
+              const result = await collection
+                .paymentCollection()
+                .insertOne(add.toDatabaseJson(invoiceNo));
+  console.log("resultbhj",result)
+              if(result){
+                return {
+                ...fetched("Payment"),
+                data: {
+                  success: true,
+                  result: result,
+                },
+              };
+              }
+              
+            }else {
+           return notExist("payment failed");
+          }
+          
     } catch (error) {
-      console.log("error", error);
+      console.log("error",error)
     }
   }
   // Handle payment cancellation
